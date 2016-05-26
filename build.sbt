@@ -49,6 +49,7 @@ libraryDependencies ++= Seq(
   "org.slf4j" % "slf4j-api" % "1.7.5",
   "ch.qos.logback" % "logback-core" % "1.0.13",
   "ch.qos.logback" % "logback-classic" % "1.0.13",
+  "org.specs2" % "specs2_2.11" % "2.3.13" % "test",
   "org.scalatest" %% "scalatest" % "2.2.6" % "test")
 
 // mainClass in assembly := Some("edu.knowitall.openie.OpenIECli")
