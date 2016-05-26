@@ -1,0 +1,17 @@
+Intercept	-0.0
+arg1 contains PRP$	-5.002240337280573E-5
+arg1 contains pronoun	-0.0
+arg1 is proper	0.0
+arg2 contains PRP$	-5.002240337280573E-5
+arg2 contains pronoun	-0.0
+arg2 is proper	-0.009364550346926247
+conj before rel	0.0
+extr covers sent	-8.773456214182152E-5
+np after extr	-0.0
+np before extr	-0.23351207210461408
+prep after extr	0.0
+prep before extr	0.0
+sent ends w/ extr	-8.773456214182152E-5
+sent starts w/ extr	1.028710313064414
+verb after extr	0.0
+which|who|that before rel	-0.2586414256565373

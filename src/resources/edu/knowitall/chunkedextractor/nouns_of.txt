@@ -1,0 +1,10 @@
+emperor
+mayor
+president
+minister
+chancellor
+prince
+king
+queen
+governor
+premier
