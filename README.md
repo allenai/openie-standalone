@@ -1,5 +1,18 @@
 Open IE
 ======
+**This repository is a modification of https://github.com/knowitall/openie
+at 9dcbf4b0a4fd088d780a3f4480ce9ce811295f30 to run on Scala 2.11.**
+
+This project currently has no maintainer and it
+contains many dependencies that would need to migrate to Scala 2.11.  To
+make the migration and future maintenence easier, I copied in the dependent
+libraries.
+
+  * [Common-scala](https://github.com/knowitall/common-scala)
+  * [NLP Tools](https://github.com/knowitall/nlptools)
+  * [ChunkedExtractor](https://github.com/knowitall/chunkedextractor)
+  * [Srlie](https://github.com/knowitall/srlie)
+
 This project contains the principal Open Information Extraction (Open IE)
 system from the University of Washington (UW).  An Open IE system runs over
 sentences and creates extractions that represent relations in text.  For
