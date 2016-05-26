@@ -1,3 +1,7 @@
+/* michaels: commented out due to dependency changes.
+ * Moving to Scala 2.11 forced us to upgrade breeze.
+ * The new APIs are quite different than the old ones.
+
 package edu.knowitall.chunkedextractor.confidence
 
 import java.io.File
@@ -19,24 +23,22 @@ object TrainChunkedExtractor extends App {
   ) {
   }
 
-  val parser = new scopt.immutable.OptionParser[Config]("trainer") {
-    def options = Seq(
-      arg("<sentence-file>", "sentences") { (path: String, config: Config) =>
+  val parser = new scopt.OptionParser[Config]("trainer") {
+      opt[String]("<sentence-file>") action { (path: String, config: Config) =>
         val file = new File(path)
         require(file.exists(), "file does not exist: " + path)
         config.copy(inputFile = file)
-      },
-      arg("<gold-file>", "gold") { (path: String, config: Config) =>
+      } text("sentences")
+      opt[String]("<gold-file>") action { (path: String, config: Config) =>
         val file = new File(path)
         require(file.exists(), "file does not exist: " + path)
         config.copy(goldFile = file)
-      },
-      arg("<output-file>", "output") { (path: String, config: Config) =>
+      } text("gold")
+      opt[String]("<output-file>") action { (path: String, config: Config) =>
         val file = new File(path)
         require(!file.exists(), "file already exist: " + path)
         config.copy(outputFile = file)
-      }
-    )
+      } text("output")
   }
 
   parser.parse(args, Config()) match {
@@ -75,3 +77,5 @@ object TrainChunkedExtractor extends App {
     trained.saveFile(config.outputFile)
   }
 }
+
+*/

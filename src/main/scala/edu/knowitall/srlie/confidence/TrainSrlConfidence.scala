@@ -1,8 +1,12 @@
+/* michaels: commented out due to dependency changes.
+ * Moving to Scala 2.11 forced us to upgrade breeze.
+ * The new APIs are quite different than the old ones.
+
 package edu.knowitall.srlie.confidence
 
 import java.io.File
 import scala.io.Source
-import scopt.mutable.OptionParser
+import scopt.OptionParser
 import edu.knowitall.tool.conf.BreezeLogisticRegressionTrainer
 import edu.knowitall.common.Resource
 import edu.knowitall.srlie.SrlExtractor
@@ -17,22 +21,16 @@ import org.slf4j.LoggerFactory
 object TrainSrlConfidence {
   val logger = LoggerFactory.getLogger(this.getClass)
   def main(args: Array[String]) {
-    object settings extends Settings {
-      var inputFile: File = _
-      var outputFile: Option[File] = None
-      var evaluate: Boolean = false
-      var count: Int = Int.MaxValue
-    }
 
-    val parser = new OptionParser("scoreextr") {
-      arg("gold", "gold set", { path: String => settings.inputFile = new File(path) })
-      argOpt("output", "output file", { path: String => settings.outputFile = Some(new File(path)) })
-      opt("e", "evaluate", "evaluate using folds", { settings.evaluate = true })
-      intOpt("c", "count", "number of sentences to use", { (i: Int) => settings.count = i })
-    }
+  val parser = new OptionParser[CliSettings]("scoreextr") {
+    opt[String]("gold") action { (path: String, settings) => settings.copy(inputFile = new File(path)) } text("gold set")
+    opt[String]("output") action { (path: String, settings) => settings.copy(outputFile = Some(new File(path))) } text("output file")
+    opt[Unit]('e', "evaluate") action { (_, settings) => settings.copy(evaluate = true) } text("evaluate using folds")
+    opt[Int]('c', "count") action { (i: Int, settings) => settings.copy(count = i) } text("number of sentences to use")
+  }
 
-    if (parser.parse(args)) {
-      run(settings)
+  parser.parse(args, CliSettings()).foreach { settings =>
+    run(settings)
     }
   }
 
@@ -42,6 +40,13 @@ object TrainSrlConfidence {
     def evaluate: Boolean
     def count: Int
   }
+
+  case class CliSettings(
+    inputFile: File = null,
+    outputFile: Option[File] = None,
+    evaluate: Boolean = false,
+    count: Int = Int.MaxValue
+  ) extends Settings
 
   def run(settings: Settings) = {
     lazy val parser = new ClearParser()
@@ -164,3 +169,5 @@ object TrainSrlConfidence {
     }
   }
 }
+
+*/

@@ -1,15 +1,13 @@
 package edu.knowitall
 package chunkedextractor
 
-import resource._
-
 import edu.knowitall.tool.chunk.ChunkedToken
 import edu.knowitall.collection.immutable.Interval
 import edu.knowitall.tool.chunk.OpenNlpChunker
 import edu.knowitall.tool.stem.MorphaStemmer
 import edu.knowitall.tool.stem.Lemmatized
 import scala.io.Source
-import edu.knowitall.common.Timing
+import edu.knowitall.common.{ Resource, Timing }
 import scala.collection.JavaConverters._
 import edu.knowitall.openregex
 import edu.washington.cs.knowitall.regex.Match
@@ -543,6 +541,7 @@ object Relnoun {
   /** Extracts relations from phrases such as:
     * "the father of Michael is John"
     * (John; is the father of; Michael)
+    *
     * @author schmmd
     */
   class OfIsExtractor(private val encloseInferredWords: Boolean, private val includeUnknownArg2: Boolean)
@@ -709,24 +708,22 @@ object Relnoun {
 
   def main(args: Array[String]) {
     // definition for command-line argument parser
-    val argumentParser = new scopt.immutable.OptionParser[Config]("openie") {
-      def options = Seq(
-        argOpt("input-file", "input file") { (string, config) =>
-          val file = new File(string)
-          require(file.exists, "input file does not exist: " + file)
-          config.copy(inputFile = Some(file))
-        },
-        argOpt("ouput-file", "output file") { (string, config) =>
-          val file = new File(string)
-          config.copy(outputFile = Some(file))
-        },
-        opt("encoding", "Character encoding") { (string, config) =>
-          config.copy(encoding = string)
-        },
-        flag("p", "pattern", "Prints the patterns") { config =>
-          config.copy(printPatterns = true)
-        }
-      )
+    val argumentParser = new scopt.OptionParser[Config]("openie") {
+      opt[String]("input-file") action { (string, config) =>
+        val file = new File(string)
+        require(file.exists, "input file does not exist: " + file)
+        config.copy(inputFile = Some(file))
+      } text ("input file")
+      opt[String]("ouput-file") action { (string, config) =>
+        val file = new File(string)
+        config.copy(outputFile = Some(file))
+      } text ("output file")
+      opt[String]("encoding") action { (string, config) =>
+        config.copy(encoding = string)
+      } text ("Character encoding")
+      opt[Unit]('p', "pattern") action { (_, config) =>
+        config.copy(printPatterns = true)
+      } text ("Prints the patterns")
     }
 
     argumentParser.parse(args, Config()) match {
@@ -767,27 +764,26 @@ object Relnoun {
 
       Timing.timeThen {
 
-        for {
-          source <- managed(config.source())
-          writer <- managed(config.writer())
-        } {
-          try {
-            for (line <- source.getLines) {
-              val chunked = chunker.chunk(line);
-              val tokens = chunked map stemmer.lemmatizeToken
+        Resource.using(config.source()) { source =>
+          Resource.using(config.writer()) { writer =>
+            try {
+              for (line <- source.getLines) {
+                val chunked = chunker.chunk(line);
+                val tokens = chunked map stemmer.lemmatizeToken
 
-              writer.println(line)
-              for (inst <- relnoun(tokens)) {
-                writer.println(("%1.2f" format conf(inst)) + ": " + inst.extr);
+                writer.println(line)
+                for (inst <- relnoun(tokens)) {
+                  writer.println(("%1.2f" format conf(inst)) + ": " + inst.extr);
+                }
+
+                writer.println();
+                writer.flush();
               }
-
-              writer.println();
-              writer.flush();
+            } catch {
+              case e: Exception =>
+                e.printStackTrace()
+                System.exit(2)
             }
-          } catch {
-            case e: Exception =>
-              e.printStackTrace()
-              System.exit(2)
           }
         }
       } { ns =>

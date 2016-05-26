@@ -1,15 +1,15 @@
-import AssemblyKeys._
-import NativePackagerKeys._
+// import AssemblyKeys._
+// import NativePackagerKeys._
 
-assemblySettings
+// assemblySettings
 
-ReleaseSettings.defaults
+// ReleaseSettings.defaults
 
 name := "openie"
 
 organization := "edu.washington.cs.knowitall.openie"
 
-crossScalaVersions := Seq("2.10.2")
+crossScalaVersions := Seq("2.11.8")
 
 scalaVersion <<= crossScalaVersions { (vs: Seq[String]) => vs.head }
 
@@ -18,43 +18,25 @@ resolvers += "Sonatype SNAPSHOTS" at "https://oss.sonatype.org/content/repositor
 val clearGroup = "com.clearnlp"
 val clearVersion = "2.0.2"
 
-val breezeVersion = "0.2"
-val breezeLearn = "org.scalanlp" %% "breeze-learn" % breezeVersion exclude("com.codecommit", "anti-xml_2.9.1") cross CrossVersion.binaryMapped {
-  case "2.9.3" => "2.9.2"
-  case "2.10.2" => "2.10"
-  case x => x
-}
-val breezeProcess = "org.scalanlp" %% "breeze-process" % breezeVersion exclude("com.codecommit", "anti-xml_2.9.1") cross CrossVersion.binaryMapped {
-  case "2.9.3" => "2.9.2"
-  case "2.10.2" => "2.10"
-  case x => x
-}
+// val breezeVersion = "1.2"
+// val breezeLearn = "org.scalanlp" %% "breeze-learn" % breezeVersion exclude("com.codecommit", "anti-xml_2.9.1")
+// val breezeProcess = "org.scalanlp" %% "breeze-process" % breezeVersion exclude("com.codecommit", "anti-xml_2.9.1")
 
-val scopt = "com.github.scopt" % "scopt" % "2.1.0" cross CrossVersion.binaryMapped {
-  case "2.9.3" => "2.9.2"
-  case "2.10.2" => "2.10"
-  case x => x
-}
+val scopt = "com.github.scopt" %% "scopt" % "3.4.0"
 
-val unfilteredFilter = "net.databinder" %% "unfiltered-filter" % "0.7.0"
-val unfilteredJetty = "net.databinder" %% "unfiltered-jetty" % "0.7.0"
+val unfilteredFilter = "net.databinder" %% "unfiltered-filter" % "0.7.1"
+val unfilteredJetty = "net.databinder" %% "unfiltered-jetty" % "0.7.1"
 
 libraryDependencies ++= Seq(
   clearGroup % "clearnlp-dictionary" % "1.0",
   clearGroup % "clearnlp-general-en-pos" % "1.1",
   clearGroup % "clearnlp-general-en-dep" % "1.2",
   clearGroup % "clearnlp-general-en-srl" % "1.1",
-  "org.scalaz" %% "scalaz-core" % "7.0.3" cross CrossVersion.binaryMapped {
-      case "2.9.3" => "2.9.2"
-      case "2.10.2" => "2.10"
-      case x => x
-    },
+  "org.scalaz" %% "scalaz-core" % "7.0.9",
   "edu.washington.cs.knowitall" % "reverb-core" % "1.4.3",
   unfilteredFilter, unfilteredJetty,
   scopt,
-  breezeProcess,
-  breezeLearn,
-  "edu.washington.cs.knowitall" %% "openregex-scala" % "1.1.2",
+  "org.allenai.openregex" %% "openregex-scala" % "1.1.3",
   "edu.washington.cs.knowitall" % "morpha-stemmer" % "1.0.5",
   "org.apache.opennlp" % "opennlp-tools" % "1.5.3" exclude("net.sf.jwordnet", "jwnl"),
   "com.clearnlp" % "clearnlp" % "2.0.2" ,
@@ -63,15 +45,13 @@ libraryDependencies ++= Seq(
   "edu.washington.cs.knowitall" % "opennlp-chunk-models" % "1.5",
   // for remote components
   "net.databinder.dispatch" %% "dispatch-core" % "0.11.0",
-  // resource management
-  "com.jsuereth" %% "scala-arm" % "1.3",
   // logging
   "org.slf4j" % "slf4j-api" % "1.7.5",
   "ch.qos.logback" % "logback-core" % "1.0.13",
   "ch.qos.logback" % "logback-classic" % "1.0.13",
   "org.scalatest" % "scalatest_2.10" % "2.0.RC1" % "test")
 
-mainClass in assembly := Some("edu.knowitall.openie.OpenIECli")
+// mainClass in assembly := Some("edu.knowitall.openie.OpenIECli")
 
 scalacOptions ++= Seq("-unchecked", "-deprecation")
 
@@ -117,11 +97,11 @@ pomExtra := (
     </developer>
   </developers>)
 
-packagerSettings
+// packagerSettings
 
-packageArchetype.java_application
+// packageArchetype.java_application
 
-mappings in Universal ++= Seq(
-  file("README.md") -> "README.md",
-  file("LICENSE") -> "LICENSE"
-)
+// mappings in Universal ++= Seq(
+//  file("README.md") -> "README.md",
+//  file("LICENSE") -> "LICENSE"
+//)

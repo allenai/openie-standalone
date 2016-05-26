@@ -10,16 +10,15 @@ import tool.stem.IdentityStemmer
 /** An executable that applies a pattern to a sentence. */
 object ApplyPattern {
   def main(args: Array[String]) {
-    val parser = new OptionParser("applypat") {
-      var patternFilePath: String = null
-      var sentenceFilePath: String = null
-      opt("p", "patterns", "<file>", "pattern file", { v: String => patternFilePath = v })
-      opt("s", "sentences", "<file>", "sentence file", { v: String => sentenceFilePath = v })
+    case class CliConfig(patternFilePath: String = null, sentenceFilePath: String = null)
+    val parser = new OptionParser[CliConfig]("applypat") {
+      opt[String]('p', "patterns") action { (v: String, config) => config.copy(patternFilePath = v) }
+      opt[String]('s', "sentences") action { (v: String, config) => config.copy(sentenceFilePath = v) }
     }
 
     val patternFormat = new DependencyPattern.StringFormat()(IdentityStemmer.instance)
 
-    if (parser.parse(args)) {
+    parser.parse(args, CliConfig()).foreach { parser =>
       val patternSource = Source.fromFile(parser.patternFilePath)
       val patterns = patternSource.getLines.map(patternFormat.read(_)).toList
       patternSource.close

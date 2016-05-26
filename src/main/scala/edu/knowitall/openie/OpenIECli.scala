@@ -8,9 +8,7 @@ import java.net.URL
 
 import scala.io.Source
 
-import resource._
-
-import edu.knowitall.common.Timing
+import edu.knowitall.common.{ Resource, Timing }
 import edu.knowitall.tool.parse.DependencyParser
 import edu.knowitall.tool.parse.ClearParser
 import edu.knowitall.tool.parse.RemoteDependencyParser
@@ -124,45 +122,43 @@ object OpenIECli extends App {
   }
 
   // definition for command-line argument parser
-  val argumentParser = new scopt.immutable.OptionParser[Config]("openie") {
-    def options = Seq(
-      argOpt("input-file", "input file") { (string, config) =>
-        val file = new File(string)
-        require(file.exists, "input file does not exist: " + file)
-        config.copy(inputFile = Some(file))
-      },
-      argOpt("ouput-file", "output file") { (string, config) =>
-        val file = new File(string)
-        config.copy(outputFile = Some(file))
-      },
-      opt("parser-server", "Parser server") { (string, config) =>
-        config.copy(parserServer = Some(new URL(string)))
-      },
-      opt("srl-server", "SRL server") { (string, config) =>
-        config.copy(srlServer = Some(new URL(string)))
-      },
-      opt("encoding", "Character encoding") { (string, config) =>
-        config.copy(encoding = string)
-      },
-      opt("format", "Output format") { (string, config) =>
-        config.copy(formatter = OutputFormat.parse(string))
-      },
-      flag("u", "usage", "show cli usage") { config =>
-        config.copy(showUsage = true)
-      },
-      flag("ignore-errors", "ignore errors") { config =>
-        config.copy(ignoreErrors = true)
-      },
-      flag("include-unknown-arg2", "includes arg2 [UNKNOWN] extractions from relnoun") { config =>
-        config.copy(includeUnknownArg2 = true)
-      },
-      flag("b", "binary", "binary output") { config =>
-        config.copy(binary = true)
-      },
-      flag("s", "split", "Split paragraphs into sentences") { config =>
-        config.copy(split = true)
-      }
-    )
+  val argumentParser = new scopt.OptionParser[Config]("openie") {
+    opt[String]("input-file") action { (string, config) =>
+      val file = new File(string)
+      require(file.exists, "input file does not exist: " + file)
+      config.copy(inputFile = Some(file))
+    } text ("input file")
+    opt[String]("ouput-file") action { (string, config) =>
+      val file = new File(string)
+      config.copy(outputFile = Some(file))
+    } text ("output file")
+    opt[String]("parser-server") action { (string, config) =>
+      config.copy(parserServer = Some(new URL(string)))
+    } text ("Parser server")
+    opt[String]("srl-server") action { (string, config) =>
+      config.copy(srlServer = Some(new URL(string)))
+    } text ("SRL server")
+    opt[String]("encoding") action { (string, config) =>
+      config.copy(encoding = string)
+    } text ("Character encoding")
+    opt[String]("format") action { (string, config) =>
+      config.copy(formatter = OutputFormat.parse(string))
+    } text ("Output format")
+    opt[Unit]('u', "usage") action { (_, config) =>
+      config.copy(showUsage = true)
+    } text ("show cli usage")
+    opt[Unit]("ignore-errors") action { (_, config) =>
+      config.copy(ignoreErrors = true)
+    } text ("ignore errors")
+    opt[Unit]("include-unknown-arg2") action { (_, config) =>
+      config.copy(includeUnknownArg2 = true)
+    } text ("includes arg2 [UNKNOWN] extractions from relnoun")
+    opt[Unit]('b', "binary") action { (_, config) =>
+      config.copy(binary = true)
+    } text ("binary output")
+    opt[Unit]('s', "split") action { (_, config) =>
+      config.copy(split = true)
+    } text ("Split paragraphs into sentences")
   }
 
   argumentParser.parse(args, Config()) match {
@@ -201,31 +197,30 @@ object OpenIECli extends App {
 
     Timing.timeThen {
       // iterate over input
-      for {
-        source <- managed(config.source())
-        writer <- managed(config.writer())
-      } {
-        val sentences =
-          if (config.split) new SentenceIterator(sentencer, source.getLines.buffered)
-          else source.getLines
+      Resource.using(config.source()) { source =>
+        Resource.using(config.writer()) { writer =>
+          val sentences =
+            if (config.split) new SentenceIterator(sentencer, source.getLines.buffered)
+            else source.getLines
 
-        // iterate over sentences
-        for {
-          sentence <- sentences
-          if !sentence.trim.isEmpty
-        } {
-          try {
-            // run the extractor
-            val insts = openie.extract(sentence)
-            config.formatter.print(writer, sentence, insts)
-            writer.flush()
-          } catch {
-            case e if config.ignoreErrors =>
-              System.err.println("Error on sentence: " + sentence)
-              e.printStackTrace()
-            case e: Exception =>
-              System.err.println("Error on sentence: " + sentence)
-              throw e
+          // iterate over sentences
+          for {
+            sentence <- sentences
+            if !sentence.trim.isEmpty
+          } {
+            try {
+              // run the extractor
+              val insts = openie.extract(sentence)
+              config.formatter.print(writer, sentence, insts)
+              writer.flush()
+            } catch {
+              case e if config.ignoreErrors =>
+                System.err.println("Error on sentence: " + sentence)
+                e.printStackTrace()
+              case e: Exception =>
+                System.err.println("Error on sentence: " + sentence)
+                throw e
+            }
           }
         }
       }

@@ -63,12 +63,12 @@ object PatternExtractor {
     })
 
   def intervalFromGroup(group: openregex.Pattern.Group[_]): Interval = {
-    val interval = group.interval
+    val range: Range = group.interval
 
-    if (interval.start == -1 || interval.end == -1) {
+    if (range.start == -1 || range.end == -1) {
       Interval.empty
     } else {
-      interval
+      Interval.open(range.start, range.end)
     }
   }
 }

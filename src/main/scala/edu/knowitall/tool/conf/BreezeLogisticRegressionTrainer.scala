@@ -1,3 +1,7 @@
+/* michaels: commented out due to dependency changes.
+ * Moving to Scala 2.11 forced us to upgrade breeze.
+ * The new APIs are quite different than the old ones.
+
 package edu.knowitall
 package tool
 package conf
@@ -30,3 +34,5 @@ class BreezeLogisticRegressionTrainer[E](features: FeatureSet[E, Double]) extend
     train(labelled, OptParams(useL1 = true))
   }
 }
+
+*/ 

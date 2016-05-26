@@ -71,43 +71,41 @@ object SrlExtractor extends App {
     }
   }
 
-  val argumentParser = new scopt.immutable.OptionParser[Config]("srl-ie") {
-    def options = Seq(
-      argOpt("input file", "input file") { (string, config) =>
-        val file = new File(string)
-        require(file.exists, "input file does not exist: " + file)
-        config.copy(inputFile = Some(file))
-      },
-      argOpt("ouput file", "output file") { (string, config) =>
-        val file = new File(string)
-        config.copy(outputFile = Some(file))
-      },
-      opt("gold", "gold file") { (string, config) =>
-        val file = new File(string)
-        require(file.exists, "gold file does not exist: " + file)
-        val gold = Resource.using(Source.fromFile(file, "UTF8")) { source =>
-          (for {
-            line <- source.getLines
-            (annotation, string) = line.split("\t") match {
-              case Array(annotation, string, _@ _*) => (annotation, string)
-              case _ => throw new MatchError("Could not parse gold entry: " + line)
-            }
-            boolean = if (annotation == "1") true else false
-          } yield {
-            string -> boolean
-          }).toMap
-        }
-        config.copy(gold = gold)
-      },
-      opt("classifier", "url to classifier model") { (string, config) =>
-        val file = new File(string)
-        require(file.exists, "classifier file does not exist: " + file)
-        config.copy(classifierUrl = file.toURI.toURL)
-      },
-      opt("format", "output format: {standard, annotation, evaluation}") { (string, config) =>
-        config.copy(outputFormat = OutputFormat(string))
+  val argumentParser = new scopt.OptionParser[Config]("srl-ie") {
+    opt[String]("input file") action { (string, config) =>
+      val file = new File(string)
+      require(file.exists, "input file does not exist: " + file)
+      config.copy(inputFile = Some(file))
+    } text ("input file")
+    opt[String]("ouput file") action { (string, config) =>
+      val file = new File(string)
+      config.copy(outputFile = Some(file))
+    } text ("output file")
+    opt[String]("gold") action { (string, config) =>
+      val file = new File(string)
+      require(file.exists, "gold file does not exist: " + file)
+      val gold = Resource.using(Source.fromFile(file, "UTF8")) { source =>
+        (for {
+          line <- source.getLines
+          (annotation, string) = line.split("\t") match {
+            case Array(annotation, string, _@ _*) => (annotation, string)
+            case _ => throw new MatchError("Could not parse gold entry: " + line)
+          }
+          boolean = if (annotation == "1") true else false
+        } yield {
+          string -> boolean
+        }).toMap
       }
-    )
+      config.copy(gold = gold)
+    } text ("gold file")
+    opt[String]("classifier") action { (string, config) =>
+      val file = new File(string)
+      require(file.exists, "classifier file does not exist: " + file)
+      config.copy(classifierUrl = file.toURI.toURL)
+    } text ("url to classifier model")
+    opt[String]("format") action { (string, config) =>
+      config.copy(outputFormat = OutputFormat(string))
+    } text ("output format: {standard, annotation, evaluation}")
   }
 
   argumentParser.parse(args, Config()) match {
