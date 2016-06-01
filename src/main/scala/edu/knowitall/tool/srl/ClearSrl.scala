@@ -42,7 +42,8 @@ class ClearSrl extends Srl {
   def apply(graph: DependencyGraph): Seq[Frame] = {
     val tree = new DEPTree()
 
-    graph.nodes.zipWithIndex.foreach {
+    val nodesSortedByIndex = graph.nodes.zipWithIndex.toList.sortBy(_._2)
+    nodesSortedByIndex.foreach {
       case (token, i) =>
         val node = new DEPNode(i + 1, token.string)
         node.pos = token.postag
