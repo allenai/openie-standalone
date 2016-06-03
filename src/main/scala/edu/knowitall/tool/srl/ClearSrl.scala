@@ -42,7 +42,23 @@ class ClearSrl extends Srl {
   def apply(graph: DependencyGraph): Seq[Frame] = {
     val tree = new DEPTree()
 
-    graph.nodes.zipWithIndex.foreach {
+    // During a from-scratch compile of this project, Scala appears to resolve
+    // graph.nodes.zipWithIndex to an implementation in IterableLike. (In this
+    // case, foreach returns nodes out-of-order with respect to the index
+    // position.) A recompilation of just this source file in a previously
+    // compiled project appears to cause Scala to select the zipWithIndex
+    // implementation in Iterable. (In this case, foreach returns nodes
+    // in-order with respect to index position.)
+    //
+    // The cause is possibly related a change in code loading order and the use
+    // implicit variables (for example, in IterableLike.)
+    //
+    // Ultimately this subtle difference causes DEPTree to receive nodes in a
+    // different order, causing radically different final results. By
+    // explicitly requesting an iterator from nodes, Scala consistently selects
+    // the zipWithIndex implementation in Iterable resulting in consistent final
+    // results.
+    graph.nodes.iterator.zipWithIndex.foreach {
       case (token, i) =>
         val node = new DEPNode(i + 1, token.string)
         node.pos = token.postag
