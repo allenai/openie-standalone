@@ -6,14 +6,19 @@ lazy val buildSettings = Seq(
   scalaVersion <<= crossScalaVersions { (vs: Seq[String]) => vs.head },
   publishMavenStyle := true,
   publishArtifact in Test := false,
-  pomIncludeRepository := { _ => false },
-  licenses += ("Open IE Software License Agreement", url("https://raw.github.com/knowitall/openie/master/LICENSE")),
-  homepage := Some(url("https://github.com/allenai/openie")),
+  licenses += ("Open IE Software License Agreement", url("https://raw.githubusercontent.com/allenai/openie-standalone/master/LICENSE")),
+  homepage := Some(url("https://github.com/allenai/openie-standalone")),
   scmInfo := Some(ScmInfo(
     url("https://github.com/allenai/openie-standalone"),
     "https://github.com/allenai/openie-standalone.git")),
   pomExtra := (
     <developers>
+      <developer>
+        <name>Michael Schmitz</name>
+      </developer>
+      <developer>
+        <name>Bhadra Mani</name>
+      </developer>
       <developer>
         <id>allenai-dev-role</id>
         <name>Allen Institute for Artificial Intelligence</name>
