@@ -1,12 +1,36 @@
-name := "openie"
+import org.allenai.plugins.CoreDependencies
 
-organization := "edu.washington.cs.knowitall.openie"
+lazy val buildSettings = Seq(
+  organization := "org.allenai.openie",
+  crossScalaVersions := Seq(CoreDependencies.defaultScalaVersion),
+  scalaVersion <<= crossScalaVersions { (vs: Seq[String]) => vs.head },
+  publishMavenStyle := true,
+  publishArtifact in Test := false,
+  licenses += ("Open IE Software License Agreement", url("https://raw.githubusercontent.com/allenai/openie-standalone/master/LICENSE")),
+  homepage := Some(url("https://github.com/allenai/openie-standalone")),
+  scmInfo := Some(ScmInfo(
+    url("https://github.com/allenai/openie-standalone"),
+    "https://github.com/allenai/openie-standalone.git")),
+  pomExtra := (
+    <developers>
+      <developer>
+        <name>Michael Schmitz</name>
+      </developer>
+      <developer>
+        <name>Bhadra Mani</name>
+      </developer>
+      <developer>
+        <id>allenai-dev-role</id>
+        <name>Allen Institute for Artificial Intelligence</name>
+        <email>dev-role@allenai.org</email>
+      </developer>
+    </developers>),
+  bintrayPackage := s"${organization.value}:${name.value}_${scalaBinaryVersion.value}"
+)
 
-crossScalaVersions := Seq("2.11.8")
-
-scalaVersion <<= crossScalaVersions { (vs: Seq[String]) => vs.head }
-
-resolvers += "Sonatype SNAPSHOTS" at "https://oss.sonatype.org/content/repositories/snapshots/"
+lazy val openie = Project(id = "openie", base = file("."))
+  .settings(buildSettings)
+  .enablePlugins(LibraryPlugin)
 
 libraryDependencies ++= Seq(
   "ch.qos.logback" % "logback-classic" % "1.0.13",
@@ -35,8 +59,6 @@ libraryDependencies ++= Seq(
 
 scalacOptions ++= Seq("-unchecked", "-deprecation")
 
-// custom options for high memory usage
-
 javaOptions += "-Xmx4G"
 
 javaOptions += "-XX:+UseConcMarkSweepGC"
@@ -45,35 +67,5 @@ fork in run := true
 
 fork in Test := true
 
-connectInput in run := true // forward stdin/out to fork
-
-licenses := Seq("Open IE Software License Agreement" -> url("https://raw.github.com/knowitall/openie/master/LICENSE"))
-
-homepage := Some(url("https://github.com/knowitall/openie"))
-
-publishMavenStyle := true
-
-publishTo <<= version { (v: String) =>
-  val nexus = "https://oss.sonatype.org/"
-  if (v.trim.endsWith("SNAPSHOT"))
-    Some("snapshots" at nexus + "content/repositories/snapshots")
-  else
-    Some("releases"  at nexus + "service/local/staging/deploy/maven2")
-}
-
-pomExtra := (
-  <scm>
-    <url>https://github.com/knowitall/openie</url>
-    <connection>scm:git://github.com/knowitall/openie.git</connection>
-    <developerConnection>scm:git:git@github.com:knowitall/openie.git</developerConnection>
-    <tag>HEAD</tag>
-  </scm>
-  <developers>
-   <developer>
-      <name>Michael Schmitz</name>
-    </developer>
-    <developer>
-      <name>Bhadra Mani</name>
-    </developer>
-  </developers>)
-
+// forward stdin/out to fork, so the OpenIE CLI can be run in sbt.
+connectInput in run := true
