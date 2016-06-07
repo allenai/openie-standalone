@@ -35,7 +35,8 @@ lazy val buildSettings = Seq(
   // published there publicly. Here we ask Bintray to bypass the license
   // restriction check during publication because we intend to publish
   // privately.
-  bintrayOmitLicense := true
+  bintrayOmitLicense := true,
+  bintrayRepository := "private"
 )
 
 lazy val openie = Project(id = "openie", base = file("."))
