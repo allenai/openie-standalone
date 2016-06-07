@@ -26,7 +26,7 @@ lazy val buildSettings = Seq(
       </developer>
     </developers>),
   bintrayPackage := s"${organization.value}:${name.value}_${scalaBinaryVersion.value}",
-  bintrayEnsureLicenses := {}
+  bintrayOmitLicense := true
 )
 
 lazy val openie = Project(id = "openie", base = file("."))
