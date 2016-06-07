@@ -25,7 +25,8 @@ lazy val buildSettings = Seq(
         <email>dev-role@allenai.org</email>
       </developer>
     </developers>),
-  bintrayPackage := s"${organization.value}:${name.value}_${scalaBinaryVersion.value}"
+  bintrayPackage := s"${organization.value}:${name.value}_${scalaBinaryVersion.value}",
+  bintrayEnsureLicenses := {}
 )
 
 lazy val openie = Project(id = "openie", base = file("."))
