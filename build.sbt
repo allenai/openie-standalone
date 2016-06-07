@@ -25,7 +25,17 @@ lazy val buildSettings = Seq(
         <email>dev-role@allenai.org</email>
       </developer>
     </developers>),
-  bintrayPackage := s"${organization.value}:${name.value}_${scalaBinaryVersion.value}"
+  bintrayPackage := s"${organization.value}:${name.value}_${scalaBinaryVersion.value}",
+
+  // Bintray supports specific OSS licenses:
+  //
+  //     https://bintray.com/docs/api/#_footnote_1
+  //
+  // OpenIE's license is unsupported by Bintray, which means it cannot be
+  // published there publicly. Here we ask Bintray to bypass the license
+  // restriction check during publication because we intend to publish
+  // privately.
+  bintrayOmitLicense := true
 )
 
 lazy val openie = Project(id = "openie", base = file("."))
