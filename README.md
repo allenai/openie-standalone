@@ -1,16 +1,5 @@
 Open IE
 ======
-**This repository is a modification of https://github.com/knowitall/openie
-at 9dcbf4b0a4fd088d780a3f4480ce9ce811295f30 to run on Scala 2.11.**
-
-This project currently has many dependencies that would need to migrate to Scala 2.11.
-To make the migration and future maintenence easier, I copied in the dependent
-libraries.
-
-  * [Common-scala](https://github.com/knowitall/common-scala)
-  * [NLP Tools](https://github.com/knowitall/nlptools)
-  * [ChunkedExtractor](https://github.com/knowitall/chunkedextractor)
-  * [Srlie](https://github.com/knowitall/srlie)
 
 This project contains the principal Open Information Extraction (Open IE)
 system from the University of Washington (UW).  An Open IE system runs over
@@ -57,6 +46,28 @@ To see an example of Open IE being used, please visit http://openie.cs.washingto
 
 ## Notifications
 
+* June 2016
+
+This repository is a modification of https://github.com/knowitall/openie
+at 9dcbf4b0a4fd088d780a3f4480ce9ce811295f30 to run on Scala 2.11.
+
+This project currently has many dependencies that would need to migrate to Scala 2.11.
+To make the migration and future maintenence easier, @schmmd copied in the dependent
+libraries:
+
+  * [Common-scala](https://github.com/knowitall/common-scala)
+  * [NLP Tools](https://github.com/knowitall/nlptools)
+  * [ChunkedExtractor](https://github.com/knowitall/chunkedextractor)
+  * [Srlie](https://github.com/knowitall/srlie)
+
+In addition, some code has been removed to ease migration to Scala 2.11:
+
+  * https://github.com/allenai/openie-standalone/commit/6b4c22ed6a7779c95042e103d4e4975167b7bf55
+
+Finally, `ClearSrl.scala` was adjusted to produce consistent behavior in Scala 2.11:
+
+  * https://github.com/allenai/openie-standalone/commit/bb5cf227448d2bf077146899c537d72fd8a228f0
+
 * [01/15/2016] The version 4.2.0 is released ([release notes](https://github.com/knowitall/openie/blob/master/release/release_notes.md)).
 
 ## Google Group
@@ -79,76 +90,118 @@ dependencies and compiling is simple.  Just run:
 
     sbt compile
 
-## Running
+## Memory requirements
 
-You can run `openie` with sbt or create a stand-alone jar.  `openie` requires
-substantial memory.  `sbt` is configured to use these options by default:
+`openie` requires substantial memory.  `sbt` is configured to use these options by default:
 
-   -Xmx4G -XX:+UseConcMarkSweepGC
+    -Xmx4G -XX:+UseConcMarkSweepGC
 
-### Running with sbt
-
-    sbt 'run-main edu.knowitall.openie.OpenIECli'
-
-### Running from a stand-alone jar.
-
-First create the stand-alone jar.
-
-    sbt clean compile assembly
-
-You may need to add the above memory options.
-
-    sbt -J-Xmx2700M clean compile assembly
-
-Then you can run the resulting jar file as normal.
-
-    java -jar openie-assembly.jar
-
-You may need to add the above memory options.
-
-    java -Xmx4g -XX:+UseConcMarkSweepGC -jar openie-assembly.jar
+## Usage
 
 ### Command Line Interface
 
-`openie` takes one sentence per line unless `--split` is specified.  If
-`--split` is specified, the input text will be split into sentences.  You can
-either pipe input from Standard Input, specify an input file (an option first
-argument), or type sentences interactively.  Output will be written to Standard
-Output unless a second option argument is specified for an output file.
+Check out this project and use `sbt` to run the CLI:
+
+    % git clone git@github.com:allenai/openie-standalone.git
+    % cd openie-standalone
+    % sbt "runMain edu.knowitall.openie.OpenIECli"
+    ...
+    [info] * * * * * * * * * * * * *
+    [info] * OpenIE 4.1.x is ready *
+    [info] * * * * * * * * * * * * *
 
 `openie` takes a number of command line arguments.  To see them all run
-`java -jar openie-assembly.jar --usage`.  Of particular interest are
+`sbt "runMain edu.knowitall.openie.OpenIECli --usage"`. Of particular interest are
 `--ignore-errors` which continues running even if an exception is encountered, `--binary` which gives the binary(triples) output and `--split` which splits the input document text into sentences.
 
-There are two formats--a simple format made for ease of reading and a
+There are two output formats in the CLI: a simple format made for ease of reading and a
 columnated format used for machine processing.  The format can be specified
 with either `--format simple` or `--format column`.  The simple format is
 chosen by default.
 
-### Java Demo
+### Code interface
 
-A simple java demo which uses openIE (https://github.com/OpenIE-HelperCodes/OpenIEDemo1)
+Superset of imports needed for the following examples:
 
-#### Simple Format
+    import edu.knowitall.openie.OpenIE
+    import edu.knowitall.openie.OpenIECli.{ColumnFormat, SimpleFormat}
+    import java.io.{PrintWriter, StringWriter}
 
-```
-> John ran down the road to fetch a pail of water.
-John ran down the road to fetch a pail of water.
-0.86 (John; ran; down the road; to fetch a pail of water)
-0.82 John ran:(John; ran down the road to fetch; a pail of water)
-```
+`openie.extract(...)` returns a sequence of `Instance` objects, which are
+containers for extractions and confidences. Each extraction has various
+fields you can access manually.
 
-#### Columnated Format
+#### toString format
 
-Columns are separated by tab, making it hard to read in this README.
+In the simplest case, you can ask each `Instance` object to produce a string
+representation of itself:
 
-```
-0.8576784836790008	John	ran	down the road; to fetch a pail of water	John ran down the road to fetch a pail of water.
-0.8195727266148489	John ran	John	ran down the road to fetch	a pail of water	John ran down the road to fetch a pail of water.
-```
+    val sentence = "U.S. President Obama gave a speech"
+    val instances = openie.extract(sentence)
+    var s = new StringBuilder()
+    for (instance <- instances) {
+      s.append("Instance: " + instance.toString() + "\n")
+    }
+    println(s.toString())
+
+That wIll produce this output:
+
+    Instance: 0.93 (U.S. President Obama; gave; a speech)
+    Instance: 0.88 (Obama; [is] President [of]; United States)
+
+#### SimpleFormat
+
+OpenIECli provides a SimpleFormat helper that produces similar output:
+
+    val sentence = "U.S. President Obama gave a speech"
+    val instances = openie.extract(sentence)
+    val sw = new StringWriter()
+    SimpleFormat.print(new PrintWriter(sw), sentence, instances)
+    println(sw.toString())
+
+That will produce this output:
+
+    U.S. President Obama gave a speech
+    0.93 (U.S. President Obama; gave; a speech)
+    0.88 (Obama; [is] President [of]; United States)
+
+#### ColumnFormat
+
+OpenIECli also provides a ColumnFormat helper that produces output with tabs:
+
+    val sentence = "U.S. President Obama gave a speech"
+    val instances = openie.extract(sentence)
+    val sw = new StringWriter()
+    ColumnFormat.print(new PrintWriter(sw), sentence, instances)
+    println(sw.toString())
+
+That will produce this output:
+
+    0.9329286852051247              SimpleArgument(U.S. President Obama,List([0, 20)))      Relation(gave,List([21, 25)))   SimpleArgument(a speech,List([26, 34))) U.S. President Obama gave a speech
+    0.8847999636040884              SimpleArgument(Obama,List([15, 20)))    Relation([is] President [of],List([5, 14)))     SimpleArgument(United States,List([0, 4)))      U.S. President Obama gave a speech
+
+## Usage at AllenAI
+
+Built jars of `openie-standalone` are published to AllenAI's private repository
+in Bintray. To use it, add the private repository to the list of dependency
+resolvers.
+
+    import org.allenai.plugins.CoreDependencies
+    
+    object Dependencies extends CoreDependencies {
+        ...
+        resolvers += "AllenAI BintrayPrivate" at "http://dl.bintray.com/allenai/private"
+        ...
+    }
+
+Then take a depenency on the latest version of OpenIE:
+
+    libraryDependencies ++= Seq(
+      ...
+      "org.allenai.openie" %% "openie" % "4.2.4"
+    )
 
 ## Contributors
 * Michael Schmitz (http://www.schmitztech.com/)
 * Harinder Pal (http://www.cse.iitd.ac.in/~mcs142123/)
 * Bhadra Mani
-
