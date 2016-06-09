@@ -185,15 +185,24 @@ class DependencyGraph(
                   // add an edge from the closest remaining parent
                   // to last, if we need to
                   val extraEdges =
-                    if (graph.neighbors(last) contains parent) Nil
-                    else List(new Graph.Edge[DependencyNode](parent, last, "prep"))
+                    if (graph.neighbors(last) contains parent) {
+                      Nil
+                    }
+                    else {
+                      List(new Graph.Edge[DependencyNode](parent, last, "prep"))
+                    }
 
                   val text = joinVertices.iterator.map(_.text).mkString(" ")
                   new Graph[DependencyNode](
                     extraEdges ++ graph.edges.filterNot(_.vertices exists (removeVertices contains _))
                   ).map(vertex =>
-                    if (vertex == prep.dest) new DependencyNode(text, prep.dest.postag, Interval.span(joinVertices.map(_.indices)), joinVertices.head.offset)
-                    else vertex)
+                    if (vertex == prep.dest) {
+                      new DependencyNode(text, prep.dest.postag, Interval.span(joinVertices.map(_.indices)), joinVertices.head.offset)
+                    }
+                    else {
+                      vertex
+                    }
+                  )
                 }
             }
           }
@@ -216,8 +225,12 @@ class DependencyGraph(
           val bestCC = ccNodes.minBy {
             case cc =>
               val dist = cc.indices distance conj.dest.indices
-              if (dist < 0) -ccNodes.length - dist
-              else dist
+              if (dist < 0) {
+                -ccNodes.length - dist
+              }
+              else {
+                dist
+              }
           }
 
           val newEdges = scala.collection.Set[Edge[DependencyNode]]() ++ graph.edges - conj + conj.copy(label = "conj_" + bestCC.text)
@@ -308,9 +321,12 @@ class DependencyGraph(
   def collapseXNsubj =
     new DependencyGraph(this.nodes, this.dependencies,
       new Graph[DependencyNode](graph.edges.map { dep =>
-        if (dep.label.equals("xsubj") || dep.label.equals("nsubj"))
+        if (dep.label.equals("xsubj") || dep.label.equals("nsubj")) {
           new Dependency(dep.source, dep.dest, "subj")
-        else dep
+        }
+        else {
+          dep
+        }
       }))
 
   def collapseNNPOf = {
@@ -322,10 +338,12 @@ class DependencyGraph(
       sorted.sliding(2).foreach(l => require((l.head.indices distance l.last.indices) == 2, "two nodes to merge don't have a distance of 2 (distance is " + (l.head.indices distance l.last.indices) + "): " + l.mkString(", ")))
       new DependencyNode(
         sorted.map(_.text).mkString(" of "),
-        if (nodes.forall(_.postag.equals(nodes.head.postag)))
+        if (nodes.forall(_.postag.equals(nodes.head.postag))) {
           nodes.head.postag
-        else
-          sorted.map(_.postag).mkString(" of "), Interval.span(sorted.map(_.indices)), sorted.iterator.map(_.offset).min
+        }
+        else {
+          sorted.map(_.postag).mkString(" of ")
+        }, Interval.span(sorted.map(_.indices)), sorted.iterator.map(_.offset).min
       )
     }
 
@@ -501,10 +519,11 @@ class DependencyGraph(
     def nodeString(node: DependencyNode) = {
       val text = escape(node.text)
       val postag = escape(node.postag)
-      if (graph.vertices.filter(_.text.equals(text)).size > 1)
+      if (graph.vertices.filter(_.text.equals(text)).size > 1) {
         text + "_" + postag + "_" + node.indices.mkString("_")
-      else
+      } else {
         text + "_" + postag
+      }
     }
 
     val indent = " " * 2;

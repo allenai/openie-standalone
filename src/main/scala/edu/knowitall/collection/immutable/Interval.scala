@@ -26,9 +26,15 @@ sealed class Interval protected (val start: Int, val end: Int)
   }
   override def canEqual(that: Any) = that.isInstanceOf[Interval]
   override def compare(that: Interval) =
-    if (this.start > that.start) 1
-    else if (this.start < that.start) -1
-    else this.length - that.length
+    if (this.start > that.start) {
+      1
+    }
+    else if (this.start < that.start) {
+      -1
+    }
+    else {
+      this.length - that.length
+    }
 
   /** Return the ith value of the interval.
     *
@@ -73,8 +79,12 @@ sealed class Interval protected (val start: Int, val end: Int)
     * @return  true if this interval borders the other interval
     */
   def borders(that: Interval) = {
-    if (this == empty || that == empty) false
-    else that.max == this.min - 1 || that.min == this.max + 1
+    if (this == empty || that == empty) {
+      false
+    }
+    else {
+      that.max == this.min - 1 || that.min == this.max + 1
+    }
   }
 
   /** Tests whether a point border an interval.
@@ -83,8 +93,12 @@ sealed class Interval protected (val start: Int, val end: Int)
     * @return  true if this interval borders the point
     */
   def borders(that: Int) = {
-    if (this == empty) false
-    else this.start - 1 == that || this.end == that
+    if (this == empty) {
+      false
+    }
+    else {
+      this.start - 1 == that || this.end == that
+    }
   }
 
   /** Tests whether this interval is a superset of another interval.
@@ -93,9 +107,15 @@ sealed class Interval protected (val start: Int, val end: Int)
     * @return  true if `this` is a superset of `that`
     */
   def superset(that: Interval) = {
-    if (that == empty) true
-    else if (this == empty) false
-    else this.start <= that.start && this.end >= that.end
+    if (that == empty) {
+      true
+    }
+    else if (this == empty) {
+      false
+    }
+    else {
+      this.start <= that.start && this.end >= that.end
+    }
   }
 
   /** Tests whether this interval is a subsert of another interval.
@@ -104,9 +124,15 @@ sealed class Interval protected (val start: Int, val end: Int)
     * @return  true if `this` is a subset of `that`
     */
   def subset(that: Interval) = {
-    if (that == empty) false
-    else if (this == empty) true
-    else this.start >= that.start && this.end <= that.end
+    if (that == empty) {
+      false
+    }
+    else if (this == empty) {
+      true
+    }
+    else {
+      this.start >= that.start && this.end <= that.end
+    }
   }
 
   /** Tests whether another interval intersects this interval.
@@ -115,8 +141,12 @@ sealed class Interval protected (val start: Int, val end: Int)
     * @return  true if `this` intersects `that`
     */
   def intersects(that: Interval) = {
-    if (that == empty || this == empty) false
-    else if (this == that) true
+    if (that == empty || this == empty) {
+      false
+    }
+    else if (this == that) {
+      true
+    }
     else {
       val left = this left that
       val right = this right that
@@ -142,16 +172,24 @@ sealed class Interval protected (val start: Int, val end: Int)
     */
   def distance(that: Interval) = {
     require(that != empty && this != empty, "empty interval")
-    if (this intersects that) 0
-    else (this.min max that.min) - (this.max min that.max)
+    if (this intersects that) {
+      0
+    }
+    else {
+      (this.min max that.min) - (this.max min that.max)
+    }
   }
 
   /** Takes the union of two intervals.
     * The two intervals must border or intersect each other.
     */
   def union(that: Interval) = {
-    if (that == empty) this
-    else if (this == empty) that
+    if (that == empty) {
+      this
+    }
+    else if (this == empty) {
+      that
+    }
     else {
       require((this borders that) || (this intersects that), "intervals must border or intersect")
       Interval.open(that.start min this.start, that.end max this.end)
@@ -162,12 +200,18 @@ sealed class Interval protected (val start: Int, val end: Int)
     * if they do not intersect.
     */
   def intersect(that: Interval) = {
-    if (that == empty || this == empty) Interval.empty
+    if (that == empty || this == empty) {
+      Interval.empty
+    }
     else {
       val start = this.start max that.start
       val end = this.end min that.end
-      if (start < end) Interval.open(start, end)
-      else Interval.empty
+      if (start < end) {
+        Interval.open(start, end)
+      }
+      else {
+        Interval.empty
+      }
     }
   }
 
@@ -183,23 +227,47 @@ sealed class Interval protected (val start: Int, val end: Int)
    * First compare based on the intervals' start, and secondly compare
    * based on the intervals' length. */
   def left(that: Interval) =
-    if (that == empty) this
-    else if (this == empty) that
-    else if (that.start < this.start) that
-    else if (that.start > this.start) this
-    else if (that.length < this.length) that
-    else this
+    if (that == empty) {
+      this
+    }
+    else if (this == empty) {
+      that
+    }
+    else if (that.start < this.start) {
+      that
+    }
+    else if (that.start > this.start) {
+      this
+    }
+    else if (that.length < this.length) {
+      that
+    }
+    else {
+      this
+    }
 
   /* Determine whether this interval or the supplied interval is right.
    * First compare based on the intervals' start, and secondly compare
    * based on the intervals' length. */
   def right(that: Interval) =
-    if (that == empty) this
-    else if (this == empty) that
-    else if (that.start > this.start) that
-    else if (that.start < this.start) this
-    else if (that.length > this.length) that
-    else this
+    if (that == empty) {
+      this
+    }
+    else if (this == empty) {
+      that
+    }
+    else if (that.start > this.start) {
+      that
+    }
+    else if (that.start < this.start) {
+      this
+    }
+    else if (that.length > this.length) {
+      that
+    }
+    else {
+      this
+    }
 
   /** The minimum index in the interval. */
   def min = start
@@ -217,17 +285,27 @@ object Interval {
   /** Create a new open interval. */
   def open(start: Int, end: Int): Interval = {
     require(end >= start, "end < start: " + end + " < " + start)
-    if (start == end) Interval.empty
-    else if (end - start == 1) Interval.singleton(start)
-    else new Interval(start, end)
+    if (start == end) {
+      Interval.empty
+    }
+    else if (end - start == 1) {
+      Interval.singleton(start)
+    }
+    else {
+      new Interval(start, end)
+    }
   }
 
   /** Create a new closed interval. */
   def closed(start: Int, end: Int): Interval = {
     require(end < Int.MaxValue, "end must be < Int.MaxValue")
     require(end >= start, "end < start: " + end + " < " + start)
-    if (end == start) Interval.singleton(start)
-    else new Closed(start, end)
+    if (end == start) {
+      Interval.singleton(start)
+    }
+    else {
+      new Closed(start, end)
+    }
   }
 
   /** Create an interval at the specified starting point of the specified length. */
@@ -257,7 +335,9 @@ object Interval {
     * @throws IllegalArgumentException  some x such that min < x < max is not in col
     */
   def from(col: Seq[Int]): Interval = {
-    if (col.isEmpty) Interval.empty
+    if (col.isEmpty) {
+      Interval.empty
+    }
     else {
       val sorted = col.sorted
       val min = sorted.head
@@ -288,8 +368,12 @@ object Interval {
     * @throws IllegalArgumentException  gap in intervals
     */
   def span(col: Iterable[Interval]): Interval = {
-    if (col.isEmpty) Interval.empty
-    else Interval.open(col.map(_.min).min, col.map(_.max).max + 1)
+    if (col.isEmpty) {
+      Interval.empty
+    }
+    else {
+      Interval.open(col.map(_.min).min, col.map(_.max).max + 1)
+    }
   }
 
   /** create a minimal spanning set of the supplied intervals.

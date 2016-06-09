@@ -35,8 +35,12 @@ abstract class LineProcessor(name: String) {
 
   def run(config: Config) {
     init(config)
-    if (config.server) (new LineProcessorServer(this.getClass.getSimpleName(), config.port, process)).run()
-    else runCli(config)
+    if (config.server) {
+      (new LineProcessorServer(this.getClass.getSimpleName(), config.port, process)).run()
+    }
+    else {
+      runCli(config)
+    }
   }
 
   def handle(writer: PrintWriter, line: String): Unit = {
@@ -59,8 +63,12 @@ abstract class LineProcessor(name: String) {
 
     val ns = Timing.time {
       val lines = {
-        if (config.parallel) source.getLines.toIndexedSeq.par
-        else source.getLines
+        if (config.parallel) {
+          source.getLines.toIndexedSeq.par
+        }
+        else {
+          source.getLines
+        }
       }
       for (line <- lines) {
         handle(writer, line)

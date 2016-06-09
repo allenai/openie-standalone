@@ -69,8 +69,12 @@ object Chunker {
 
           val chunkType = {
             val hyphen = nextToken.indexOf('-')
-            if (hyphen == -1) nextToken
-            else nextToken.drop(hyphen + 1)
+            if (hyphen == -1) {
+              nextToken
+            }
+            else {
+              nextToken.drop(hyphen + 1)
+            }
           }
           (chunkType, Interval.open(nextIndex, chunkTokens.toSeq.lastOption.map(_._2 + 1).getOrElse(nextIndex + 1)))
         }

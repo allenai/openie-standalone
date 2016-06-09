@@ -41,8 +41,12 @@ object Analysis {
     var points = List[(Int, Double)]()
 
     for (score <- scores) {
-      if (score) correct = correct + 1
-      else incorrect = incorrect + 1
+      if (score) {
+        correct = correct + 1
+      }
+      else {
+        incorrect = incorrect + 1
+      }
 
       if (score) {
         points ::= (correct, precision(correct, incorrect))
@@ -59,7 +63,9 @@ object Analysis {
     * @return  a triple of T, the yield, and the precision
     */
   def precisionYieldMeta[T](scores: Seq[(T, Boolean)]): Seq[(T, Int, Double)] = {
-    if (scores.length == 0) List()
+    if (scores.length == 0) {
+      List()
+    }
     else {
       var correct = 0
       var incorrect = 0
@@ -68,8 +74,12 @@ object Analysis {
 
       var i = 0
       for ((meta, score) <- scores) {
-        if (score) correct = correct + 1
-        else incorrect = incorrect + 1
+        if (score) {
+          correct = correct + 1
+        }
+        else {
+          incorrect = incorrect + 1
+        }
 
         if (meta != last || i == scores.length - 1) {
           last = meta

@@ -21,8 +21,12 @@ abstract class LineProcessor {
     val scanner = new Scanner(System.in, "UTF-8")
 
     val condition =
-      if (args.length > 0 && args.contains("-i")) () => true
-      else () => scanner.hasNextLine
+      if (args.length > 0 && args.contains("-i")) {
+        () => true
+      }
+      else {
+        () => scanner.hasNextLine
+      }
 
     val ns = time {
       while (condition()) {

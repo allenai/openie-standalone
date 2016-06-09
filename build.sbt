@@ -68,7 +68,21 @@ libraryDependencies ++= Seq(
   "org.specs2" % "specs2_2.11" % "2.3.13" % "test"
 )
 
-scalacOptions ++= Seq("-unchecked", "-deprecation")
+// The OpenIE codebase generates compiler warnings like this:
+//
+//   Adapting argument list by creating a 2-tuple
+//   Adapting argument list by creating a 3-tuple
+//   implicit conversion method ... should be enabled
+//   method deserialize in object ... is deprecated
+//   possible missing interpolator
+//   reflective access of structural type member method close should be enabled
+//   side-effecting nullary methods are discouraged
+//   type parameter String defined in method apply shadows type String defined in object Predef. You may want to rename your type parameter, or possibly remove it.
+//
+// The code should be fixed to not have these problems. Until then, "-nowarn"
+// is used to suppress them. The goal is to not spam the console when "sbt
+// runMain ..." is used on a fresh checkout.
+scalacOptions ++= Seq("-unchecked", "-deprecation", "-nowarn")
 
 javaOptions += "-Xmx4G"
 
@@ -80,3 +94,21 @@ fork in Test := true
 
 // forward stdin/out to fork, so the OpenIE CLI can be run in sbt.
 connectInput in run := true
+
+// The OpenIE codebase has many insignificant style warnings that appear
+// whenever the code is compiled. There are also some important-sounding
+// warnings which don't seem to affect the behavior but should be
+// fixed eventually:
+//
+//   Classes must override both equals and hashCode, not just one
+//   Line is more than 100 characters long
+//   Tab in Scala file
+//   Unusual class name; consider renaming
+//   illegal.imports.message
+//
+// This styleCheck change suppresses style checking by faking a successful
+// result. The goal is to not spam the console when "sbt runMain ..." is used
+// on a fresh checkout.
+(StylePlugin.StyleKeys.styleCheck in Compile) := {
+  org.scalastyle.OutputResult(0, 0, 0, 0)
+}

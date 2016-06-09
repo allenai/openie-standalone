@@ -37,9 +37,15 @@ class Dependency(
 
   def nodes = Set(source, dest)
   def otherNode(node: DependencyNode) =
-    if (source == dest) throw new IllegalStateException("source == dest")
-    else if (source == node) dest
-    else source
+    if (source == dest) {
+      throw new IllegalStateException("source == dest")
+    }
+    else if (source == node) {
+      dest
+    }
+    else {
+      source
+    }
 
   def mapNodes(f: DependencyNode => DependencyNode) = {
     new Dependency(f(source), f(dest), label)

@@ -43,8 +43,12 @@ class LogisticRegression[T](
 
     val z = this.featureSet.featureNames.iterator.map { name =>
       val weight = featureWeights(name)
-      if (weight == 0.0 || weight == -0.0) 0
-      else weight * featureSet.featureMap(name).apply(extraction)
+      if (weight == 0.0 || weight == -0.0) {
+        0
+      }
+      else {
+        weight * featureSet.featureMap(name).apply(extraction)
+      }
     }.sum
 
     1.0 / (1.0 + math.exp(-(exponentCoefficient * z + this.intercept)))

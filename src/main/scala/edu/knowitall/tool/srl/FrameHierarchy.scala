@@ -5,14 +5,20 @@ import edu.knowitall.collection.immutable.graph.Direction
 
 case class FrameHierarchy(frame: Frame, children: Seq[FrameHierarchy]) {
   def height: Int =
-    if (children.isEmpty) 1
-    else 1 + children.iterator.map(_.height).max
+    if (children.isEmpty) {
+      1
+    }
+    else {
+      1 + children.iterator.map(_.height).max
+    }
   override def toString = frame.toString + (if (children.size > 0) (" < " + children.mkString(", ")) else "")
 }
 
 object FrameHierarchy {
   def fromFrames(dgraph: DependencyGraph, frames: Seq[Frame]) = {
-    if (frames.isEmpty) Seq.empty
+    if (frames.isEmpty) {
+      Seq.empty
+    }
     else {
       val framesWithIndex = frames.zipWithIndex
 
@@ -44,15 +50,23 @@ object FrameHierarchy {
           case (parent, children) =>
             val descendants = children flatMap hierarchy
             // add children of children
-            if (descendants != children) parent -> (descendants ++ children)
+            if (descendants != children) {
+              parent -> (descendants ++ children)
+            }
             // there is no change
-            else parent -> children
+            else {
+              parent -> children
+            }
         }
 
         // unstable, continue
-        if (targets != hierarchy) transitiveClosure(targets)
+        if (targets != hierarchy) {
+          transitiveClosure(targets)
+        }
         // stable, stop
-        else targets
+        else {
+          targets
+        }
       }
 
       val closure = transitiveClosure(descendants)
