@@ -81,18 +81,6 @@ fork in Test := true
 // forward stdin/out to fork, so the OpenIE CLI can be run in sbt.
 connectInput in run := true
 
-// The OpenIE codebase has many insignificant style warnings that appear
-// whenever the code is compiled. There are also some important-sounding
-// warnings which don't seem to affect the behavior but should be
-// fixed eventually:
-//
-//   Line is more than 100 characters long
-//   Unusual class name; consider renaming
-//   illegal.imports.message
-//
-// This styleCheck change suppresses style checking by faking a successful
-// result. The goal is to not spam the console when "sbt runMain ..." is used
-// on a fresh checkout.
-(StylePlugin.StyleKeys.styleCheck in Compile) := {
-  org.scalastyle.OutputResult(0, 0, 0, 0)
-}
+// The style warning "Line is more than 100 characters long" appears in
+// hundreds of places and is not very important in this codebase at the moment.
+StylePlugin.enableLineLimit := false
