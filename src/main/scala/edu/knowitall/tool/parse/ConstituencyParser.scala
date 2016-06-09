@@ -31,7 +31,7 @@ abstract class ParseTree(val token: String, var index: Int, val children: Array[
     preorder(this).iterator
   }
 
-  def print {
+  def print() {
     def print(tree: ParseTree, indent: Int) {
       if (tree.children.isEmpty) {
         println(" " * indent + "(" + tree.token + ")")
