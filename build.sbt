@@ -68,21 +68,7 @@ libraryDependencies ++= Seq(
   "org.specs2" % "specs2_2.11" % "2.3.13" % "test"
 )
 
-// The OpenIE codebase generates compiler warnings like this:
-//
-//   Adapting argument list by creating a 2-tuple
-//   Adapting argument list by creating a 3-tuple
-//   implicit conversion method ... should be enabled
-//   method deserialize in object ... is deprecated
-//   possible missing interpolator
-//   reflective access of structural type member method close should be enabled
-//   side-effecting nullary methods are discouraged
-//   type parameter String defined in method apply shadows type String defined in object Predef. You may want to rename your type parameter, or possibly remove it.
-//
-// The code should be fixed to not have these problems. Until then, "-nowarn"
-// is used to suppress them. The goal is to not spam the console when "sbt
-// runMain ..." is used on a fresh checkout.
-scalacOptions ++= Seq("-unchecked", "-deprecation", "-nowarn")
+scalacOptions ++= Seq("-unchecked", "-deprecation")
 
 javaOptions += "-Xmx4G"
 
