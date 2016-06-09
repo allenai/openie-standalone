@@ -52,6 +52,11 @@ sealed abstract class DirectedEdge[T](val edge: Edge[T]) {
     case that: DirectedEdge[_] => (that canEqual this) && that.edge == this.edge
     case _ => false
   }
+
+  override def hashCode(): Int = {
+    val state = Seq(edge)
+    state.map(_.hashCode()).foldLeft(0)((a, b) => 31 * a + b)
+  }
 }
 
 /** an edge that is traversed in the `Up` direction.  In other words,
@@ -71,6 +76,7 @@ case class UpEdge[T](override val edge: Edge[T]) extends DirectedEdge[T](edge) {
   override def toString() = "Up(" + super.toString + ")"
   override def canEqual(that: Any) = that.isInstanceOf[UpEdge[_]]
   override def hashCode() = (edge.hashCode + 2) * 37
+  override def equals(that: Any): Boolean = super.equals(that)
 }
 
 /** an edge that is traversed in the `Down` direction.  In other words,
@@ -90,4 +96,5 @@ case class DownEdge[T](override val edge: Edge[T]) extends DirectedEdge[T](edge)
   override def toString() = "Down(" + super.toString + ")"
   override def canEqual(that: Any) = that.isInstanceOf[DownEdge[_]]
   override def hashCode() = (edge.hashCode + 1) * 37
+  override def equals(that: Any): Boolean = super.equals(that)
 }

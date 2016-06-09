@@ -86,9 +86,7 @@ connectInput in run := true
 // warnings which don't seem to affect the behavior but should be
 // fixed eventually:
 //
-//   Classes must override both equals and hashCode, not just one
 //   Line is more than 100 characters long
-//   Tab in Scala file
 //   Unusual class name; consider renaming
 //   illegal.imports.message
 //

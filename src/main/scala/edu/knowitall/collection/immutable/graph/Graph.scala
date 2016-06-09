@@ -349,6 +349,11 @@ class Graph[T](
   }
 
   def print(): Unit = print(System.out)
+
+  override def hashCode(): Int = {
+    val state = Seq(outgoing, incoming, vertices, edges)
+    state.map(_.hashCode()).foldLeft(0)((a, b) => 31 * a + b)
+  }
 }
 
 object Graph {

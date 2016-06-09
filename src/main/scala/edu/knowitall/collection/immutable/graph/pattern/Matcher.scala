@@ -38,6 +38,11 @@ abstract class WrappedEdgeMatcher[T](val matcher: EdgeMatcher[T]) extends EdgeMa
   }
 
   override def baseEdgeMatcher = matcher.baseEdgeMatcher
+
+  override def hashCode(): Int = {
+    val state = Seq(matcher)
+    state.map(_.hashCode()).foldLeft(0)((a, b) => 31 * a + b)
+  }
 }
 
 class DirectedEdgeMatcher[T](val direction: Direction, matcher: EdgeMatcher[T]) extends WrappedEdgeMatcher[T](matcher) {
@@ -116,6 +121,11 @@ abstract class WrappedNodeMatcher[T](val matcher: NodeMatcher[T])
   }
 
   override def baseNodeMatchers = this.matcher.baseNodeMatchers
+
+  override def hashCode(): Int = {
+    val state = Seq(matcher)
+    state.map(_.hashCode()).foldLeft(0)((a, b) => 31 * a + b)
+  }
 }
 
 class ConjunctiveNodeMatcher[T](val matchers: Set[NodeMatcher[T]])
@@ -143,6 +153,11 @@ class ConjunctiveNodeMatcher[T](val matchers: Set[NodeMatcher[T]])
   override def equals(that: Any) = that match {
     case that: ConjunctiveNodeMatcher[_] => (that canEqual this) && this.matchers == that.matchers
     case _ => false
+  }
+
+  override def hashCode(): Int = {
+    val state = Seq(matchers)
+    state.map(_.hashCode()).foldLeft(0)((a, b) => 31 * a + b)
   }
 }
 

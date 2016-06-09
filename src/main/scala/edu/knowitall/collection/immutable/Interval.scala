@@ -274,6 +274,11 @@ sealed class Interval protected (val start: Int, val end: Int)
 
   /** The maximum index in the interval. */
   def max = end - 1
+
+  override def hashCode(): Int = {
+    val state = Seq(super.hashCode(), start, end)
+    state.map(_.hashCode()).foldLeft(0)((a, b) => 31 * a + b)
+  }
 }
 
 object Interval {

@@ -578,6 +578,11 @@ class DependencyGraph(
       println(key + ": " + graph.outgoing(key).map(edge => edge.label + "(" + edge.dest + ")").mkString(", "))
     }
   }
+
+  override def hashCode(): Int = {
+    val state = Seq(text, nodes, dependencies, graph)
+    state.map(_.hashCode()).foldLeft(0)((a, b) => 31 * a + b)
+  }
 }
 
 object DependencyGraph {

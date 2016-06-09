@@ -216,6 +216,16 @@ object SrlExtraction {
     def tokenSpan = span
 
     override def hashCode = intervals.hashCode * 39 + tokens.hashCode
+    def canEqual(that: Any): Boolean = that.isInstanceOf[Context]
+    override def equals(that: Any): Boolean = that match {
+      case that: MultiPart => (
+          that.canEqual(this)
+              && this.text == that.text
+              && this.tokens == that.tokens
+              && this.intervals == that.intervals
+          )
+      case _ => false
+    }
   }
 
   abstract class SinglePart extends Part {
@@ -232,7 +242,7 @@ object SrlExtraction {
   class Context(val text: String, val tokens: Seq[DependencyNode], val intervals: Seq[Interval]) extends MultiPart {
     override def toString = text
 
-    def canEqual(that: Any): Boolean = that.isInstanceOf[Context]
+    override def canEqual(that: Any): Boolean = that.isInstanceOf[Context]
     override def equals(that: Any): Boolean = that match {
       case that: Context => (
         that.canEqual(this)
@@ -241,6 +251,11 @@ object SrlExtraction {
         && this.intervals == that.intervals
       )
       case _ => false
+    }
+
+    override def hashCode(): Int = {
+      val state = Seq(super.hashCode(), text, tokens, intervals)
+      state.map(_.hashCode()).foldLeft(0)((a, b) => 31 * a + b)
     }
   }
 
@@ -328,7 +343,7 @@ object SrlExtraction {
 
     override def toString = text
 
-    def canEqual(that: Any): Boolean = that.isInstanceOf[Relation]
+    override def canEqual(that: Any): Boolean = that.isInstanceOf[Relation]
     override def equals(that: Any): Boolean = that match {
       case that: Relation => (
         that.canEqual(this)
@@ -342,6 +357,8 @@ object SrlExtraction {
     def concat(other: Relation) = {
       Relation(this.text + " " + other.text, None, this.tokens ++ other.tokens, this.intervals ++ other.intervals)
     }
+
+    override def hashCode: Int = super.hashCode
   }
 
   object Relation {
