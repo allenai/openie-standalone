@@ -5,10 +5,7 @@ import edu.knowitall.tool.chunk.ChunkedToken
 import edu.knowitall.tool.chunk.OpenNlpChunker
 import edu.knowitall.collection.immutable.Interval
 import edu.knowitall.tool.stem.MorphaStemmer
-import edu.knowitall.tool.stem.Lemmatized
-import edu.knowitall.openregex
-
-import scala.collection.JavaConverters._
+import scala.language.implicitConversions
 
 class Nesty
     extends BinaryPatternExtractor[Nesty.ExtractionInstance](Nesty.pattern) {

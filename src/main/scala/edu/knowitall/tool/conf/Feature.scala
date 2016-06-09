@@ -1,5 +1,7 @@
 package edu.knowitall.tool.conf
 
+import scala.language.implicitConversions
+
 /** An abstract representation for a feature used by the
   * confidence function.
   *

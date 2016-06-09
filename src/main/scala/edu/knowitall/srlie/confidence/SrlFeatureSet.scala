@@ -7,7 +7,7 @@ import scala.collection.immutable.SortedMap
 import edu.knowitall.tool.srl.FrameHierarchy
 import edu.knowitall.srlie.SrlExtraction.Part
 import java.util.regex.Pattern
-import java.util.regex.Pattern
+import scala.language.implicitConversions
 
 object SrlFeatureSet extends FeatureSet[SrlExtractionInstance, Double](SrlFeatures.featureMap)
 

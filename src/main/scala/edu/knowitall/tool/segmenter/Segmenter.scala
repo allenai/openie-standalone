@@ -2,8 +2,7 @@ package edu.knowitall.tool
 package segment
 
 import _root_.edu.knowitall.collection.immutable.Interval
-
-import scala.concurrent.ExecutionContext.Implicits.global
+import scala.language.implicitConversions
 
 /** A sentencer breaks text into sentences.
   */

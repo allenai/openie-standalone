@@ -4,11 +4,10 @@ package parse
 package graph
 
 import edu.knowitall.collection.immutable.graph.Graph
-import edu.knowitall.collection.immutable.graph.Graph._
-import scala.collection.immutable.SortedSet
 import edu.knowitall.collection.immutable.Interval
-import tool.stem.{ Stemmer, IdentityStemmer }
+import tool.stem.{ Stemmer }
 import tool.postag.PostaggedToken
+import scala.language.implicitConversions
 
 /** A representation for a node in the graph of dependencies.  A node
   * represents one or more adjacent tokens in the source sentence.

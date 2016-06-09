@@ -3,11 +3,9 @@ package edu.knowitall.chunkedextractor.confidence
 import edu.knowitall.tool.conf.FeatureSet
 import edu.knowitall.tool.conf.Feature
 import scala.collection.immutable.SortedMap
-import edu.knowitall.tool.srl.FrameHierarchy
-import java.util.regex.Pattern
-import java.util.regex.Pattern
 import edu.knowitall.chunkedextractor.BinaryExtractionInstance
 import edu.knowitall.tool.chunk.ChunkedToken
+import scala.language.implicitConversions
 
 object ChunkedExtractorFeatureSet extends FeatureSet[BinaryExtractionInstance[ChunkedToken], Double](ChunkedExtractorFeatures.featureMap)
 

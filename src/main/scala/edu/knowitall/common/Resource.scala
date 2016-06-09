@@ -1,5 +1,7 @@
 package edu.knowitall.common
 
+import scala.language.reflectiveCalls
+
 /** Functions for managing resources. */
 object Resource {
   /** A using clause that uses structural typing so it can be used on
