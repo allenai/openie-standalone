@@ -5,7 +5,7 @@ package graph
 
 import edu.knowitall.collection.immutable.graph.Graph
 import edu.knowitall.collection.immutable.Interval
-import tool.stem.{ Stemmer }
+import tool.stem.Stemmer
 import tool.postag.PostaggedToken
 import scala.language.implicitConversions
 
