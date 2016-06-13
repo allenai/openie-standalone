@@ -65,7 +65,8 @@ libraryDependencies ++= Seq(
   "org.scalatest" %% "scalatest" % "2.2.6" % "test",
   "org.scalaz" %% "scalaz-core" % "7.0.9",
   "org.slf4j" % "slf4j-api" % "1.7.5",
-  "org.specs2" % "specs2_2.11" % "2.3.13" % "test"
+  "org.specs2" % "specs2_2.11" % "2.3.13" % "test",
+  "nl.jqno.equalsverifier" % "equalsverifier" % "2.1"
 )
 
 scalacOptions ++= Seq("-unchecked", "-deprecation")

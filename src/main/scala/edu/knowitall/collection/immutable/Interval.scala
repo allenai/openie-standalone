@@ -17,7 +17,7 @@ sealed class Interval protected (val start: Int, val end: Int)
   def serialize = toString
 
   override def toString = "[" + start + ", " + end + ")"
-  override def equals(that: Any) = that match {
+  override final def equals(that: Any) = that match {
     // fast comparison for Intervals
     case that: Interval => that.canEqual(this) && that.start == this.start && that.end == this.end
     // slower comparison for Seqs
@@ -275,7 +275,7 @@ sealed class Interval protected (val start: Int, val end: Int)
   /** The maximum index in the interval. */
   def max = end - 1
 
-  override def hashCode(): Int = {
+  override final def hashCode(): Int = {
     val state = Seq(super.hashCode(), start, end)
     state.map(_.hashCode()).foldLeft(0)((a, b) => 31 * a + b)
   }

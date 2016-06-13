@@ -71,7 +71,7 @@ class DependencyGraph(
   val text = Tokenizer.originalText(this.nodes)
 
   def canEqual(that: Any) = that.isInstanceOf[DependencyGraph]
-  override def equals(that: Any) = that match {
+  override final def equals(that: Any) = that match {
     case that: DependencyGraph => that.canEqual(this) &&
       this.text == that.text &&
       this.nodes == that.nodes &&
@@ -579,7 +579,7 @@ class DependencyGraph(
     }
   }
 
-  override def hashCode(): Int = {
+  override final def hashCode(): Int = {
     val state = Seq(text, nodes, dependencies, graph)
     state.map(_.hashCode()).foldLeft(0)((a, b) => 31 * a + b)
   }

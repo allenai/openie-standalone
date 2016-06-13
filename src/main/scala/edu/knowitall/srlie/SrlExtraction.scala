@@ -216,7 +216,7 @@ object SrlExtraction {
     def tokenSpan = span
 
     override def hashCode = intervals.hashCode * 39 + tokens.hashCode
-    def canEqual(that: Any): Boolean = that.isInstanceOf[Context]
+    def canEqual(that: Any): Boolean = that.isInstanceOf[MultiPart]
     override def equals(that: Any): Boolean = that match {
       case that: MultiPart => (
           that.canEqual(this)
@@ -254,7 +254,7 @@ object SrlExtraction {
     }
 
     override def hashCode(): Int = {
-      val state = Seq(super.hashCode(), text, tokens, intervals)
+      val state = Seq(text, tokens, intervals)
       state.map(_.hashCode()).foldLeft(0)((a, b) => 31 * a + b)
     }
   }
@@ -348,6 +348,7 @@ object SrlExtraction {
       case that: Relation => (
         that.canEqual(this)
         && this.text == that.text
+        && this.sense == that.sense
         && this.tokens == that.tokens
         && this.intervals == that.intervals
       )
@@ -358,7 +359,10 @@ object SrlExtraction {
       Relation(this.text + " " + other.text, None, this.tokens ++ other.tokens, this.intervals ++ other.intervals)
     }
 
-    override def hashCode: Int = super.hashCode
+    override def hashCode(): Int = {
+      val state = Seq(text, sense, tokens, intervals)
+      state.map(_.hashCode()).foldLeft(0)((a, b) => 31 * a + b)
+    }
   }
 
   object Relation {

@@ -46,6 +46,8 @@ class Graph[T](
   def canEqual(that: Any) = that.isInstanceOf[Graph[_]]
   override def equals(that: Any) = that match {
     case that: Graph[_] => (that canEqual this) &&
+      that.outgoing == this.outgoing &&
+      that.incoming == this.incoming &&
       that.vertices == this.vertices &&
       that.edges == this.edges
     case _ => false
