@@ -3,6 +3,7 @@ package tool
 package stem
 
 import tool.tokenize.Token
+import scala.language.implicitConversions
 
 case class Lemmatized[+T <: Token](token: T, lemma: String)
 

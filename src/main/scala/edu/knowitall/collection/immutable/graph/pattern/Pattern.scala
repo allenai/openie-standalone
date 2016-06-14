@@ -71,8 +71,12 @@ class Pattern[T](
       case (m: CaptureNodeMatcher[_]) :: xs =>
         m.matchText(vertex).map(text => rec(xs, vertex, edges, (m.alias, Match.NodeGroup(vertex, text)) :: nodeGroups, edgeGroups)).getOrElse(List())
       case (m: NodeMatcher[_]) :: xs if m.matches(vertex) =>
-        if (m.matches(vertex)) rec(xs, vertex, edges, nodeGroups, edgeGroups)
-        else List()
+        if (m.matches(vertex)) {
+          rec(xs, vertex, edges, nodeGroups, edgeGroups)
+        }
+        else {
+          List()
+        }
       case (m: EdgeMatcher[_]) :: xs =>
         // only consider edges that have not been used
         val uniqueEdges = graph.dedges(vertex) -- edges.iterator.flatMap(e => List(e, e.flip))

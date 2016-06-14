@@ -200,8 +200,12 @@ object OpenIECli extends App {
       Resource.using(config.source()) { source =>
         Resource.using(config.writer()) { writer =>
           val sentences =
-            if (config.split) new SentenceIterator(sentencer, source.getLines.buffered)
-            else source.getLines
+            if (config.split) {
+              new SentenceIterator(sentencer, source.getLines.buffered)
+            }
+            else {
+              source.getLines
+            }
 
           // iterate over sentences
           for {

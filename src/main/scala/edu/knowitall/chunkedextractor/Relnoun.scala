@@ -196,17 +196,27 @@ object Relnoun {
     if (arg2_modified.text == "") isValidExtraction = false
 
     //remove extractions with arg1 as Sunday,Monday..,January, February...
-    if (arg1_notAllowed.contains(arg1.text)) isValidExtraction = false
-    if (arg1_notAllowed.contains(arg2_modified.text)) isValidExtraction = false
+    if (arg1_notAllowed.contains(arg1.text)) {
+      isValidExtraction = false
+    }
 
-    if (!isValidExtraction) None
+    if (arg1_notAllowed.contains(arg2_modified.text)) {
+      isValidExtraction = false
+    }
 
+    if (!isValidExtraction) {
+      None
+    }
     else {
       val inferredIs = if (encloseInferredWords) "[is]" else "is"
 
       var rel_text = relation.text
-      if (includeIs) rel_text = inferredIs + " " + rel_text
-      if (includePost) rel_text = rel_text + " " + inferred_post(m, encloseInferredWords, arg2_modified.text)
+      if (includeIs) {
+        rel_text = inferredIs + " " + rel_text
+      }
+      if (includePost) {
+        rel_text = rel_text + " " + inferred_post(m, encloseInferredWords, arg2_modified.text)
+      }
       val relation_modified = ExtractionPart.fromSentenceTokens(tokens, relation.tokenInterval, rel_text)
 
       val extr = new BinaryExtraction(arg1, relation_modified, arg2_modified)
@@ -215,10 +225,22 @@ object Relnoun {
   }
 
   def inferred_post(m: openregex.Pattern.Match[PatternExtractor.Token], encloseInferredWords: Boolean, arg2_text: String): String = {
-    val inferredOf = if (encloseInferredWords) "[of]" else "of"
-    val inferredFrom = if (encloseInferredWords) "[from]" else "from"
+    val inferredOf = if (encloseInferredWords) {
+      "[of]"
+    } else {
+      "of"
+    }
 
-    if (!locations.contains(arg2_text)) inferredOf //if arg2 is not a demonym, use inferredOf
+    val inferredFrom = if (encloseInferredWords) {
+      "[from]"
+    }
+    else {
+      "from"
+    }
+
+    if (!locations.contains(arg2_text)) {
+      inferredOf // if arg2 is not a demonym, use inferredOf
+    }
     else {
       m.group("relnoun") match {
         case None => inferredOf

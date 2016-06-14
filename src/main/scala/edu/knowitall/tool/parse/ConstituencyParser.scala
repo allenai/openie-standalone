@@ -17,10 +17,12 @@ abstract class ParseTree(val token: String, var index: Int, val children: Array[
 
   /** Prints the tree in Penn treebank format. */
   override def toString() =
-    if (children.size == 0)
+    if (children.size == 0) {
       token
-    else
+    }
+    else {
       "(" + token + " " + children.map(child => child.toString).mkString(" ") + ")"
+    }
 
   def value = token
 
@@ -29,7 +31,7 @@ abstract class ParseTree(val token: String, var index: Int, val children: Array[
     preorder(this).iterator
   }
 
-  def print {
+  def print() {
     def print(tree: ParseTree, indent: Int) {
       if (tree.children.isEmpty) {
         println(" " * indent + "(" + tree.token + ")")

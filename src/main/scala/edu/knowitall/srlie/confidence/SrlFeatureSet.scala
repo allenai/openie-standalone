@@ -7,7 +7,7 @@ import scala.collection.immutable.SortedMap
 import edu.knowitall.tool.srl.FrameHierarchy
 import edu.knowitall.srlie.SrlExtraction.Part
 import java.util.regex.Pattern
-import java.util.regex.Pattern
+import scala.language.implicitConversions
 
 object SrlFeatureSet extends FeatureSet[SrlExtractionInstance, Double](SrlFeatures.featureMap)
 
@@ -19,8 +19,12 @@ object SrlFeatures {
 
   /** Turn a hierarchical frame to a list of frames. */
   def flattenFrame(frame: FrameHierarchy): Seq[FrameHierarchy] = {
-    if (frame.children.isEmpty) Seq.empty
-    else frame +: frame.children.flatMap(flattenFrame(_))
+    if (frame.children.isEmpty) {
+      Seq.empty
+    }
+    else {
+      frame +: frame.children.flatMap(flattenFrame(_))
+    }
   }
 
   object hierarchicalFrames extends SrlFeature("hierarchical frames") {
@@ -203,13 +207,16 @@ object SrlFeatures {
     val weirdChars = Pattern.compile("[^AEIOUYaeiouy0-9]")
     override def apply(inst: SrlExtractionInstance): Double = {
       // are there more than 5 caps?
-      if (notCapsPattern.matcher(getPart(inst).text).replaceAll("").length() > 5)
+      if (notCapsPattern.matcher(getPart(inst).text).replaceAll("").length() > 5) {
         1.0
+      }
       // are there not enough good characters?
-      else if (weirdChars.matcher(getPart(inst).text).replaceAll("").length() < 2)
+      else if (weirdChars.matcher(getPart(inst).text).replaceAll("").length() < 2) {
         1.0
-      else
+      }
+      else {
         0.0
+      }
     }
   }
 

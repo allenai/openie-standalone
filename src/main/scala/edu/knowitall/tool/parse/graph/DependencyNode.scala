@@ -4,11 +4,10 @@ package parse
 package graph
 
 import edu.knowitall.collection.immutable.graph.Graph
-import edu.knowitall.collection.immutable.graph.Graph._
-import scala.collection.immutable.SortedSet
 import edu.knowitall.collection.immutable.Interval
-import tool.stem.{ Stemmer, IdentityStemmer }
+import tool.stem.Stemmer
 import tool.postag.PostaggedToken
+import scala.language.implicitConversions
 
 /** A representation for a node in the graph of dependencies.  A node
   * represents one or more adjacent tokens in the source sentence.
@@ -34,13 +33,17 @@ class DependencyNode(string: String, postag: String, val tokenInterval: Interval
 
   // extend Ordered[DependencyNode]
   override def compare(that: DependencyNode) = {
-    if (this == that) 0
+    if (this == that) {
+      0
+    }
     else if (this.tokenInterval intersects that.tokenInterval) {
       implicitly[Ordering[Tuple3[String, String, Int]]].compare(
         (this.string, this.postag, this.offset),
         (that.string, that.postag, that.offset)
       )
-    } else this.tokenInterval.compare(that.tokenInterval)
+    } else {
+      this.tokenInterval.compare(that.tokenInterval)
+    }
   }
 
   // extend Object
@@ -97,11 +100,13 @@ object DependencyNode {
     val text = sorted.map(_.text).mkString(" ")
     val postag =
       // if they all have the same postag, use that
-      if (nodes.forall(_.postag.equals(nodes.head.postag)))
+      if (nodes.forall(_.postag.equals(nodes.head.postag))) {
         nodes.head.postag
+      }
       // otherwise use the first postag
-      else
+      else {
         sorted.map(_.postag).head
+      }
 
     // union the intervals, or throw a more informative exception if they are
     // not adjacent

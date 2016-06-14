@@ -15,9 +15,15 @@ object Random {
     def rec(n: Int, choice: A): A = {
       if (iterator.hasNext) {
         val next = iterator.next
-        if (rand.nextDouble() * n < 1) rec(n + 1, next)
-        else rec(n + 1, choice)
-      } else choice
+        if (rand.nextDouble() * n < 1) {
+          rec(n + 1, next)
+        }
+        else {
+          rec(n + 1, choice)
+        }
+      } else {
+        choice
+      }
     }
 
     rec(2, iterator.next)

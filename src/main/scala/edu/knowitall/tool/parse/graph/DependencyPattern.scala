@@ -166,8 +166,12 @@ object DependencyEdgeMatcher {
   */
 class LabelEdgeMatcher(val label: String) extends DependencyEdgeMatcher {
   override def matchText(edge: DirectedEdge[DependencyNode]) =
-    if (label == edge.edge.label) Some(label)
-    else None
+    if (label == edge.edge.label) {
+      Some(label)
+    }
+    else {
+      None
+    }
 
   override def flip = this
 

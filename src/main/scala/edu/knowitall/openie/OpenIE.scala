@@ -63,8 +63,12 @@ class OpenIE(parser: DependencyParser = new ClearParser(), srl: Srl = new ClearS
 
     // run extractors
     val srlExtrs: Seq[SrlExtractionInstance] =
-      if (isTriples) srlie(parsed).flatMap(_.triplize())
-      else srlie(parsed)
+      if (isTriples) {
+        srlie(parsed).flatMap(_.triplize())
+      }
+      else {
+        srlie(parsed)
+      }
     val relnounExtrs = relnoun(chunked)
 
     def convertSrl(inst: SrlExtractionInstance): Instance = {

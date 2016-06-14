@@ -46,6 +46,8 @@ class Graph[T](
   def canEqual(that: Any) = that.isInstanceOf[Graph[_]]
   override def equals(that: Any) = that match {
     case that: Graph[_] => (that canEqual this) &&
+      that.outgoing == this.outgoing &&
+      that.incoming == this.incoming &&
       that.vertices == this.vertices &&
       that.edges == this.edges
     case _ => false
@@ -72,8 +74,12 @@ class Graph[T](
   def connected(v: T, pred: DirectedEdge[T] => Boolean): Set[T] = {
     def rec(vertices: Set[T], last: Set[T]): Set[T] = {
       val neighbors: Set[T] = last.flatMap(this.neighbors(_, pred))
-      if (neighbors.isEmpty) vertices
-      else rec(vertices ++ neighbors, neighbors -- vertices)
+      if (neighbors.isEmpty) {
+        vertices
+      }
+      else {
+        rec(vertices ++ neighbors, neighbors -- vertices)
+      }
     }
 
     rec(Set(v), Set(v))
@@ -132,8 +138,12 @@ class Graph[T](
       val source = tsource.getOrElse(edge.source)
       val dest = tdest.getOrElse(edge.dest)
 
-      if (source == dest) List()
-      else List(new E(source, dest, edge.label))
+      if (source == dest) {
+        List()
+      }
+      else {
+        List(new E(source, dest, edge.label))
+      }
     }
 
     new Graph(newedges)
@@ -250,8 +260,12 @@ class Graph[T](
     */
   def vertexBipaths(start: T, end: T): List[List[T]] = {
     def bipaths(start: T, path: List[T]): List[List[T]] = {
-      if (start.equals(end)) List(path)
-      else neighbors(start).filter(nb => !path.contains(nb)).toList.flatMap(nb => bipaths(nb, nb :: path))
+      if (start.equals(end)) {
+        List(path)
+      }
+      else {
+        neighbors(start).filter(nb => !path.contains(nb)).toList.flatMap(nb => bipaths(nb, nb :: path))
+      }
     }
 
     bipaths(start, List(start)).map(_.reverse)
@@ -261,9 +275,15 @@ class Graph[T](
     */
   private def vertexBipaths(vertices: Set[T], maxLength: Option[Int] = None): Set[List[T]] = {
     def bipaths(start: T, path: List[T], length: Int): List[List[T]] = {
-      if (maxLength.isDefined && length > maxLength.get) List()
-      else if (vertices.forall(path.contains(_))) List(path)
-      else neighbors(start).filter(nb => !path.contains(nb)).toList.flatMap(nb => bipaths(nb, nb :: path, length + 1))
+      if (maxLength.isDefined && length > maxLength.get) {
+        List()
+      }
+      else if (vertices.forall(path.contains(_))) {
+        List(path)
+      }
+      else {
+        neighbors(start).filter(nb => !path.contains(nb)).toList.flatMap(nb => bipaths(nb, nb :: path, length + 1))
+      }
     }
 
     vertices.flatMap(start => bipaths(start, List(start), 0).map(_.reverse))
@@ -293,8 +313,12 @@ class Graph[T](
       val children = this.successors(v)
       val targets = children intersect vertices
 
-      if (targets.size == 0) v
-      else sink(targets.head)
+      if (targets.size == 0) {
+        v
+      }
+      else {
+        sink(targets.head)
+      }
     }
 
     // go back up, making sure there is only one option
@@ -302,9 +326,15 @@ class Graph[T](
       val parents = this.predecessors(v)
       val targets = parents intersect vertices
 
-      if (targets.size == 0) v
-      else if (targets.size == 1) climb(targets.head)
-      else throw new IllegalArgumentException("there is no single superior")
+      if (targets.size == 0) {
+        v
+      }
+      else if (targets.size == 1) {
+        climb(targets.head)
+      }
+      else {
+        throw new IllegalArgumentException("there is no single superior")
+      }
     }
 
     climb(sink(vertices.head))
@@ -321,6 +351,11 @@ class Graph[T](
   }
 
   def print(): Unit = print(System.out)
+
+  override def hashCode(): Int = {
+    val state = Seq(outgoing, incoming, vertices, edges)
+    state.map(_.hashCode()).foldLeft(0)((a, b) => 31 * a + b)
+  }
 }
 
 object Graph {

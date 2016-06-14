@@ -22,11 +22,17 @@ class PrefixMap[T]
   var value: Option[T] = None
 
   def get(s: String): Option[T] =
-    if (s.isEmpty) value
-    else suffixes get (s(0)) flatMap (_.get(s substring 1))
+    if (s.isEmpty) {
+      value
+    }
+    else {
+      suffixes get (s(0)) flatMap (_.get(s substring 1))
+    }
 
   def withPrefix(s: String): PrefixMap[T] =
-    if (s.isEmpty) this
+    if (s.isEmpty) {
+      this
+    }
     else {
       val leading = s(0)
       suffixes get leading match {
@@ -41,8 +47,14 @@ class PrefixMap[T]
     withPrefix(s).value = Some(elem)
 
   override def remove(s: String): Option[T] =
-    if (s.isEmpty) { val prev = value; value = None; prev }
-    else suffixes get (s(0)) flatMap (_.remove(s substring 1))
+    if (s.isEmpty) {
+      val prev = value
+      value = None
+      prev
+    }
+    else {
+      suffixes get (s(0)) flatMap (_.remove(s substring 1))
+    }
 
   def iterator: Iterator[(String, T)] =
     (for (v <- value.iterator) yield ("", v)) ++

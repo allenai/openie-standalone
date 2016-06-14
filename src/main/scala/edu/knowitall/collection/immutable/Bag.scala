@@ -28,8 +28,12 @@ class Bag[T] private (private val bagmap: immutable.Map[T, Int], override val si
 
   // override Traversable
   override def iterator =
-    if (bagmap.isEmpty) Iterator.empty
-    else bagmap map { case (k, v) => Iterator.continually(k).take(v) } reduce (_ ++ _)
+    if (bagmap.isEmpty) {
+      Iterator.empty
+    }
+    else {
+      bagmap map { case (k, v) => Iterator.continually(k).take(v) } reduce (_ ++ _)
+    }
 
   override def newBuilder = Bag.newBuilder[T]
 

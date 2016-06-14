@@ -1,5 +1,7 @@
 package edu.knowitall.tool.conf
 
+import scala.language.implicitConversions
+
 /** An abstract representation for a feature used by the
   * confidence function.
   *
@@ -20,8 +22,12 @@ object Feature {
   implicit def booleanToDouble[E](feature: Feature[E, Boolean]) =
     new Feature[E, Double](feature.name) {
       override def apply(item: E) = {
-        if (feature(item)) 1.0
-        else 0.0
+        if (feature(item)) {
+          1.0
+        }
+        else {
+          0.0
+        }
       }
     }
 }

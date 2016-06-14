@@ -1,22 +1,14 @@
 package edu.knowitall.chunkedextractor
 
 import java.util.regex.Pattern
-
-import scala.collection.JavaConverters.asScalaBufferConverter
-import scala.collection.JavaConverters.seqAsJavaListConverter
-
 import com.google.common.base.{ Function => GuavaFunction }
-
 import edu.knowitall.collection.immutable.Interval
 import edu.knowitall.tool.chunk.ChunkedToken
 import edu.knowitall.tool.stem.Lemmatized
-
 import edu.knowitall.openregex
 import edu.washington.cs.knowitall.logic.{ Expression => LExpression }
 import edu.washington.cs.knowitall.logic.LogicExpression
-import edu.washington.cs.knowitall.regex.Expression
-import edu.washington.cs.knowitall.regex.Match
-import edu.washington.cs.knowitall.regex.RegularExpression
+import scala.language.implicitConversions
 
 object PatternExtractor {
   type Token = Lemmatized[ChunkedToken]

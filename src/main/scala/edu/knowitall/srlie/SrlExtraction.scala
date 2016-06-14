@@ -23,9 +23,15 @@ case class SrlExtraction(relation: Relation, arg1: Argument, arg2s: Seq[Argument
   def rel = relation
 
   def relationArgument = {
-    if (this.active) this.arg2s.find(arg2 => arg2.role == Roles.A1 || arg2.role == Roles.A2)
-    else if (this.passive) this.arg2s.find(_.role == Roles.A2)
-    else None
+    if (this.active) {
+      this.arg2s.find(arg2 => arg2.role == Roles.A1 || arg2.role == Roles.A2)
+    }
+    else if (this.passive) {
+      this.arg2s.find(_.role == Roles.A2)
+    }
+    else {
+      None
+    }
   }
 
   def intervals = (arg1.interval +: relation.intervals) ++ arg2s.map(_.interval)
@@ -52,9 +58,15 @@ case class SrlExtraction(relation: Relation, arg1: Argument, arg2s: Seq[Argument
         val arg2s = /* a0New +: */ this.arg2s.filterNot(_ == a1)
 
         val inferred =
-          if (this.rel.tokens.exists(token => token.text == "has" || token.text == "have")) "[been]"
-          else if (arg1.plural) "[were]"
-          else "[was]"
+          if (this.rel.tokens.exists(token => token.text == "has" || token.text == "have")) {
+            "[been]"
+          }
+          else if (arg1.plural) {
+            "[were]"
+          }
+          else {
+            "[was]"
+          }
 
         val (before, after) = this.rel.tokens.filter { token =>
           !beVerbs.contains(token.text)
@@ -98,8 +110,12 @@ case class SrlExtraction(relation: Relation, arg1: Argument, arg2s: Seq[Argument
       }
 
       // don't include dobj if we create any intransitives
-      if (extrs exists (_.intransitive)) this.triplize(false)
-      else extrs
+      if (extrs exists (_.intransitive)) {
+        this.triplize(false)
+      }
+      else {
+        extrs
+      }
     }
 
     tripleExtrs.filter { extr =>
@@ -171,8 +187,12 @@ object SrlExtraction {
 
     val arg2s =
       // if we didn't find any, use any prime arguments that were found
-      if (rightArg2s.isEmpty) arguments.filter(arg => arg != arg1 && (arg.role.label matches "A\\d+"))
-      else rightArg2s
+      if (rightArg2s.isEmpty) {
+        arguments.filter(arg => arg != arg1 && (arg.role.label matches "A\\d+"))
+      }
+      else {
+        rightArg2s
+      }
 
     new SrlExtraction(relation, arg1, arg2s, context, negated)
   }
@@ -196,6 +216,16 @@ object SrlExtraction {
     def tokenSpan = span
 
     override def hashCode = intervals.hashCode * 39 + tokens.hashCode
+    def canEqual(that: Any): Boolean = that.isInstanceOf[MultiPart]
+    override def equals(that: Any): Boolean = that match {
+      case that: MultiPart => (
+          that.canEqual(this)
+              && this.text == that.text
+              && this.tokens == that.tokens
+              && this.intervals == that.intervals
+          )
+      case _ => false
+    }
   }
 
   abstract class SinglePart extends Part {
@@ -212,7 +242,7 @@ object SrlExtraction {
   class Context(val text: String, val tokens: Seq[DependencyNode], val intervals: Seq[Interval]) extends MultiPart {
     override def toString = text
 
-    def canEqual(that: Any): Boolean = that.isInstanceOf[Context]
+    override def canEqual(that: Any): Boolean = that.isInstanceOf[Context]
     override def equals(that: Any): Boolean = that match {
       case that: Context => (
         that.canEqual(this)
@@ -221,6 +251,11 @@ object SrlExtraction {
         && this.intervals == that.intervals
       )
       case _ => false
+    }
+
+    override def hashCode(): Int = {
+      val state = Seq(text, tokens, intervals)
+      state.map(_.hashCode()).foldLeft(0)((a, b) => 31 * a + b)
     }
   }
 
@@ -308,11 +343,12 @@ object SrlExtraction {
 
     override def toString = text
 
-    def canEqual(that: Any): Boolean = that.isInstanceOf[Relation]
+    override def canEqual(that: Any): Boolean = that.isInstanceOf[Relation]
     override def equals(that: Any): Boolean = that match {
       case that: Relation => (
         that.canEqual(this)
         && this.text == that.text
+        && this.sense == that.sense
         && this.tokens == that.tokens
         && this.intervals == that.intervals
       )
@@ -321,6 +357,11 @@ object SrlExtraction {
 
     def concat(other: Relation) = {
       Relation(this.text + " " + other.text, None, this.tokens ++ other.tokens, this.intervals ++ other.intervals)
+    }
+
+    override def hashCode(): Int = {
+      val state = Seq(text, sense, tokens, intervals)
+      state.map(_.hashCode()).foldLeft(0)((a, b) => 31 * a + b)
     }
   }
 
@@ -354,6 +395,7 @@ object SrlExtraction {
   }
 
   /** Find all nodes in a components next to the node.
+    *
     * @param  node  components will be found adjacent to this node
     * @param  labels  components may be connected by edges with any of these labels
     * @param  without  components may not include any of these nodes
@@ -385,7 +427,9 @@ object SrlExtraction {
       if (without.forall(!inferiors.contains(_))) {
         val span = Interval.span(inferiors.map(_.indices).toSeq)
         Some(graph.nodes.filter(node => span.superset(node.indices)).toList)
-      } else None
+      } else {
+        None
+      }
     }
   }
 
@@ -455,8 +499,12 @@ object SrlExtraction {
         contiguousAdjacent(dgraph, arg.node, dedge => dedge.dir == Direction.Down && !(forbiddenEdgeLabel contains dedge.edge.label), boundaries)
 
       val componentNodes: Set[List[DependencyNode]] =
-        if (immediateNodes.exists(_.isProperNoun)) Set.empty
-        else components(dgraph, arg.node, componentEdgeLabels, boundaries, false)
+        if (immediateNodes.exists(_.isProperNoun)) {
+          Set.empty
+        }
+        else {
+          components(dgraph, arg.node, componentEdgeLabels, boundaries, false)
+        }
 
       val nodeSpan = Interval.span(immediateNodes.map(_.tokenInterval) ++ componentNodes.map(_.tokenInterval))
       val nodes = dgraph.nodes.slice(nodeSpan.start, nodeSpan.end)
@@ -474,7 +522,9 @@ object SrlExtraction {
 
   def fromFrameHierarchy(dgraph: DependencyGraph)(frameh: FrameHierarchy): Seq[SrlExtraction] = {
     def rec(frameh: FrameHierarchy): Seq[SrlExtraction] = {
-      if (frameh.children.isEmpty) SrlExtraction.fromFrame(dgraph)(frameh.frame).toSeq
+      if (frameh.children.isEmpty) {
+        SrlExtraction.fromFrame(dgraph)(frameh.frame).toSeq
+      }
       else {
         SrlExtraction.fromFrame(dgraph)(frameh.frame) match {
           case Some(extr) =>
@@ -510,12 +560,14 @@ object SrlExtraction {
                       new Context(sortedToken.iterator.map(_.string).mkString(" "), sortedToken, intervals)
                     case None => context
                   }
-                  if (extr.arg1 == subextr.arg1)
+                  if (extr.arg1 == subextr.arg1) {
                     // combine the relations to make a more informative relation phrase
                     SrlExtraction(relation concat subextr.relation, subextr.arg1, subextr.arg2s, Some(combinedContext), extr.negated || subextr.negated)
-                  else
+                  }
+                  else {
                     // the nested extraction has a different arg1
                     SrlExtraction(subextr.relation, subextr.arg1, subextr.arg2s, Some(combinedContext), subextr.negated)
+                  }
                 }
             })
           case None => Seq.empty

@@ -63,4 +63,9 @@ class Bipath[T](val path: List[DirectedEdge[T]]) {
       new Bipath(array.filter(dep => !pred(dep.edge)).toList)
     }
   }
+
+  override def hashCode(): Int = {
+    val state = Seq(path)
+    state.map(_.hashCode()).foldLeft(0)((a, b) => 31 * a + b)
+  }
 }
