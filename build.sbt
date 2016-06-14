@@ -60,12 +60,13 @@ libraryDependencies ++= Seq(
   "net.databinder" %% "unfiltered-filter" % "0.7.1",
   "net.databinder" %% "unfiltered-jetty" % "0.7.1",
   "net.databinder.dispatch" %% "dispatch-core" % "0.11.0",
-  "nl.jqno.equalsverifier" % "equalsverifier" % "2.1" % "test",
   "org.allenai.openregex" %% "openregex-scala" % "1.1.3",
   "org.apache.opennlp" % "opennlp-tools" % "1.5.3" exclude("net.sf.jwordnet", "jwnl"),
-  "org.scalatest" %% "scalatest" % "2.2.6" % "test",
   "org.scalaz" %% "scalaz-core" % "7.0.9",
   "org.slf4j" % "slf4j-api" % "1.7.5",
+
+  "nl.jqno.equalsverifier" % "equalsverifier" % "2.1" % "test",
+  "org.scalatest" %% "scalatest" % "2.2.6" % "test",
   "org.specs2" % "specs2_2.11" % "2.3.13" % "test"
 )
 
