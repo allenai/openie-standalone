@@ -1,4 +1,4 @@
-Open IE
+Open IE [![Build Status](https://semaphoreci.com/api/v1/allenai/openie-standalone/branches/master/badge.svg)](https://semaphoreci.com/allenai/openie-standalone)
 ======
 
 This project contains the principal Open Information Extraction (Open IE)
@@ -187,7 +187,7 @@ in Bintray. To use it, add the private repository to the list of dependency
 resolvers.
 
     import org.allenai.plugins.CoreDependencies
-    
+
     object Dependencies extends CoreDependencies {
         ...
         resolvers += "AllenAI BintrayPrivate" at "http://dl.bintray.com/allenai/private"
