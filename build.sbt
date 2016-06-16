@@ -3,7 +3,7 @@ import org.allenai.plugins.CoreDependencies
 lazy val buildSettings = Seq(
   organization := "org.allenai.openie",
   crossScalaVersions := Seq(CoreDependencies.defaultScalaVersion),
-  scalaVersion <<= crossScalaVersions { (vs: Seq[String]) => vs.head },
+  scalaVersion := crossScalaVersions.value.head,
   publishMavenStyle := true,
   publishArtifact in Test := false,
   licenses += ("Open IE Software License Agreement", url("https://raw.githubusercontent.com/allenai/openie-standalone/master/LICENSE")),
