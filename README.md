@@ -189,7 +189,7 @@ resolvers:
     // Add the following to your build.sbt file. If you have a project/Dependencies.scala file,
     // you should add it there instead.
     resolvers += "AllenAI BintrayPrivate" at "http://dl.bintray.com/allenai/private"
-    libraryDependencies += ("org.allenai.openie" %% "openie" % "4.2.4")
+    libraryDependencies += "org.allenai.openie" %% "openie" % "4.2.4"
 
 ## Contributors
 * Michael Schmitz (http://www.schmitztech.com/)
