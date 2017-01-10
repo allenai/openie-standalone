@@ -182,24 +182,14 @@ That will produce this output:
 
 ## Usage at AllenAI
 
-Built jars of `openie-standalone` are published to AllenAI's private repository
+`openie-standalone` is published to AllenAI's private repository
 in Bintray. To use it, add the private repository to the list of dependency
-resolvers.
+resolvers:
 
-    import org.allenai.plugins.CoreDependencies
-
-    object Dependencies extends CoreDependencies {
-        ...
-        resolvers += "AllenAI BintrayPrivate" at "http://dl.bintray.com/allenai/private"
-        ...
-    }
-
-Then take a depenency on the latest version of OpenIE:
-
-    libraryDependencies ++= Seq(
-      ...
-      "org.allenai.openie" %% "openie" % "4.2.4"
-    )
+    // Add the following to your build.sbt file. If you have a project/Dependencies.scala file,
+    // you should add it there instead.
+    resolvers += "AllenAI BintrayPrivate" at "http://dl.bintray.com/allenai/private"
+    libraryDependencies += ("org.allenai.openie" %% "openie" % "4.2.4")
 
 ## Contributors
 * Michael Schmitz (http://www.schmitztech.com/)
