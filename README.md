@@ -126,6 +126,8 @@ Superset of imports needed for the following examples:
     import edu.knowitall.openie.OpenIE
     import edu.knowitall.openie.OpenIECli.{ColumnFormat, SimpleFormat}
     import java.io.{PrintWriter, StringWriter}
+    
+    val openie = new OpenIE
 
 `openie.extract(...)` returns a sequence of `Instance` objects, which are
 containers for extractions and confidences. Each extraction has various
