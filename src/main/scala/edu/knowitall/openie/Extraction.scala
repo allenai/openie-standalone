@@ -16,7 +16,7 @@ case class Extraction(arg1: Argument, rel: Relation, arg2s: Seq[Argument], conte
   override def toString = {
     val basic = tripleString
     context match {
-      case Some(context) => context + ":" + basic
+      case Some(context) => context.displayText + ":" + basic
       case None => basic
     }
   }
@@ -31,7 +31,9 @@ abstract class Part {
   def displayText = text
 }
 
-case class Context(text: String, offsets: Seq[Interval]) extends Argument
+case class Context(text: String, offsets: Seq[Interval]) extends Argument {
+  override def displayText = s"Context(${text})"
+}
 
 abstract class Argument extends Part
 abstract class SemanticArgument extends Part
