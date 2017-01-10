@@ -2,7 +2,7 @@ package edu.knowitall
 package tool
 package tokenize
 
-import scala.collection.JavaConversions._
+import scala.collection.JavaConverters._
 import edu.knowitall.common.Resource.using
 import com.clearnlp.tokenization.AbstractTokenizer
 import com.clearnlp.nlp.NLPGetter
@@ -15,7 +15,7 @@ class ClearTokenizer
 
   def tokenize(sentence: String): Seq[Token] = {
     val strings = tokenizer.getTokens(sentence)
-    Tokenizer.computeOffsets(strings, sentence)
+    Tokenizer.computeOffsets(strings.asScala, sentence)
   }
 }
 

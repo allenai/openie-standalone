@@ -3,7 +3,7 @@ package tool
 package tokenize
 
 import java.net.URL
-import scala.collection.JavaConversions._
+import scala.collection.JavaConverters._
 import opennlp.tools.tokenize.{ TokenizerME, TokenizerModel }
 import opennlp.tools.util.Span
 import edu.knowitall.common.Resource
