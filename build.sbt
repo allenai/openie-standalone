@@ -42,6 +42,7 @@ lazy val buildSettings = Seq(
 lazy val openie = Project(id = "openie", base = file("."))
   .settings(buildSettings)
   .enablePlugins(LibraryPlugin)
+  .enablePlugins(DockerBuildPlugin)
 
 libraryDependencies ++= Seq(
   "ch.qos.logback" % "logback-classic" % "1.0.13",
@@ -79,6 +80,8 @@ javaOptions += "-XX:+UseConcMarkSweepGC"
 fork in run := true
 
 fork in Test := true
+
+mainClass := Some("edu.knowitall.openie.OpenIECli")
 
 // forward stdin/out to fork, so the OpenIE CLI can be run in sbt.
 connectInput in run := true
