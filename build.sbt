@@ -6,7 +6,7 @@ lazy val buildSettings = Seq(
   scalaVersion := crossScalaVersions.value.head,
   publishMavenStyle := true,
   publishArtifact in Test := false,
-  licenses += ("Open IE Software License Agreement", url("https://raw.githubusercontent.com/allenai/openie-standalone/master/LICENSE")),
+  licenses += ("OpenIE", url("https://github.com/allenai/openie-standalone/blob/master/LICENSE")),
   homepage := Some(url("https://github.com/allenai/openie-standalone")),
   scmInfo := Some(ScmInfo(
     url("https://github.com/allenai/openie-standalone"),
@@ -27,16 +27,7 @@ lazy val buildSettings = Seq(
     </developers>),
   bintrayPackage := s"${organization.value}:${name.value}_${scalaBinaryVersion.value}",
 
-  // Bintray supports specific OSS licenses:
-  //
-  //     https://bintray.com/docs/api/#_footnote_1
-  //
-  // OpenIE's license is unsupported by Bintray, which means it cannot be
-  // published there publicly. Here we ask Bintray to bypass the license
-  // restriction check during publication because we intend to publish
-  // privately.
-  bintrayOmitLicense := true,
-  bintrayRepository := "private"
+  bintrayRepository := "maven"
 )
 
 lazy val openie = Project(id = "openie", base = file("."))
