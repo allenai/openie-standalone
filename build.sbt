@@ -6,7 +6,6 @@ lazy val buildSettings = Seq(
   scalaVersion := crossScalaVersions.value.head,
   publishMavenStyle := true,
   publishArtifact in Test := false,
-  licenses += ("OpenIE", url("https://github.com/allenai/openie-standalone/blob/master/LICENSE")),
   homepage := Some(url("https://github.com/allenai/openie-standalone")),
   scmInfo := Some(ScmInfo(
     url("https://github.com/allenai/openie-standalone"),
@@ -27,7 +26,16 @@ lazy val buildSettings = Seq(
     </developers>),
   bintrayPackage := s"${organization.value}:${name.value}_${scalaBinaryVersion.value}",
 
-  bintrayRepository := "maven"
+  bintrayRepository := "maven",
+
+  // Custom OpenIE license
+  licenses += ("OpenIE", url("https://github.com/allenai/openie-standalone/blob/master/LICENSE")),
+
+  // The task "bintrayEnsureLicenses", provided by sbt-bintray, ensures that
+  // the license for this project is in a hard-coded list defined by bintry's
+  // Licenses object. Because "OpenIE" is not in that list, this task always
+  // fails causing the build to fail. So the task is redefined to do nothing.
+  bintrayEnsureLicenses := { }
 )
 
 lazy val openie = Project(id = "openie", base = file("."))
