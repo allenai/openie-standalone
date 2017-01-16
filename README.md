@@ -121,79 +121,107 @@ chosen by default.
 
 ### Code interface
 
-Superset of imports needed for the following examples:
+You can depend on the OpenIE library in your SBT-based application instead of using the CLI. The minimal declaration in your `build.sbt` file is:
 
-    import edu.knowitall.openie.OpenIE
-    import edu.knowitall.openie.OpenIECli.{ColumnFormat, SimpleFormat}
-    import java.io.{PrintWriter, StringWriter}
-    
+```scala
+resolvers += Resolver.jcenterRepo
+libraryDependencies += "org.allenai.openie" %% "openie" % "4.2.6"
+```
+
+#### Hello World example
+
+To illustrate how OpenIE can be done used in your application, here is a *Hello World* application.
+
+Make a new directory and create three files:
+
+File 1: `build.properties`:
+
+```
+sbt.version=0.13.11
+```
+
+File 2: `build.sbt`:
+
+```
+scalaVersion := "2.11.8"
+resolvers += Resolver.jcenterRepo
+libraryDependencies += "org.allenai.openie" %% "openie" % "4.2.6"
+```
+
+File 3: `OpenIEHelloWorld.scala`:
+
+```scala
+import edu.knowitall.openie.OpenIE
+import edu.knowitall.openie.OpenIECli.{ColumnFormat, SimpleFormat}
+import java.io.{PrintWriter, StringWriter}
+
+object OpenIEHelloWorld {
     val openie = new OpenIE
-
-`openie.extract(...)` returns a sequence of `Instance` objects, which are
-containers for extractions and confidences. Each extraction has various
-fields you can access manually.
-
-#### toString format
-
-In the simplest case, you can ask each `Instance` object to produce a string
-representation of itself:
-
     val sentence = "U.S. President Obama gave a speech"
     val instances = openie.extract(sentence)
-    var s = new StringBuilder()
-    for (instance <- instances) {
-      s.append("Instance: " + instance.toString() + "\n")
+
+    def main(args: Array[String]): Unit = {
+        println("Hello, OpenIE world.")
+        exampleUsage1()
+        exampleUsage2()
+        exampleUsage3()
     }
-    println(s.toString())
 
-That wIll produce this output:
+    def exampleUsage1() : Unit = {
+        println("Example Usage 1:")
+        println("")
+        var s = new StringBuilder()
+        for (instance <- instances) {
+          s.append("Instance: " + instance.toString() + "\n")
+        }
+        println(s.toString())
+    }
 
-    Instance: 0.93 (U.S. President Obama; gave; a speech)
-    Instance: 0.88 (Obama; [is] President [of]; United States)
+    def exampleUsage2() : Unit = {
+        println("Example Usage 2:")
+        println("")
+        val sw = new StringWriter()
+        SimpleFormat.print(new PrintWriter(sw), sentence, instances)
+        println(sw.toString())
+    }
 
-#### SimpleFormat
+    def exampleUsage3() : Unit = {
+        println("Example Usage 3:")
+        println("")
+        val sw = new StringWriter()
+        ColumnFormat.print(new PrintWriter(sw), sentence, instances)
+        println(sw.toString())
+    }
 
-OpenIECli provides a SimpleFormat helper that produces similar output:
+}
+```
 
-    val sentence = "U.S. President Obama gave a speech"
-    val instances = openie.extract(sentence)
-    val sw = new StringWriter()
-    SimpleFormat.print(new PrintWriter(sw), sentence, instances)
-    println(sw.toString())
+In this example, `openie.extract(...)` is used. It returns a sequence of `Instance` objects, which are containers for extractions and confidences. Each extraction has various fields you can access manually. These fields are used directly (`.toString`), with `SimpleFormat` and with `ColumnFormat`.
 
-That will produce this output:
+Finally, run the application with `sbt -J-Xmx4G run` to see output like this:
 
-    U.S. President Obama gave a speech
-    0.93 (U.S. President Obama; gave; a speech)
-    0.88 (Obama; [is] President [of]; United States)
+```
+Hello, OpenIE world.
+Example Usage 1:
 
-#### ColumnFormat
+Instance: 0.93 (U.S. President Obama; gave; a speech)
+Instance: 0.88 (Obama; [is] President [of]; United States)
 
-OpenIECli also provides a ColumnFormat helper that produces output with tabs:
+Example Usage 2:
 
-    val sentence = "U.S. President Obama gave a speech"
-    val instances = openie.extract(sentence)
-    val sw = new StringWriter()
-    ColumnFormat.print(new PrintWriter(sw), sentence, instances)
-    println(sw.toString())
+U.S. President Obama gave a speech
+0.93 (U.S. President Obama; gave; a speech)
+0.88 (Obama; [is] President [of]; United States)
 
-That will produce this output:
 
-    0.9329286852051247              SimpleArgument(U.S. President Obama,List([0, 20)))      Relation(gave,List([21, 25)))   SimpleArgument(a speech,List([26, 34))) U.S. President Obama gave a speech
-    0.8847999636040884              SimpleArgument(Obama,List([15, 20)))    Relation([is] President [of],List([5, 14)))     SimpleArgument(United States,List([0, 4)))      U.S. President Obama gave a speech
+Example Usage 3:
 
-## Usage at AllenAI
-
-`openie-standalone` is published to AllenAI's private repository
-in Bintray. To use it, add the private repository to the list of dependency
-resolvers:
-
-    // Add the following to your build.sbt file. If you have a project/Dependencies.scala file,
-    // you should add it there instead.
-    resolvers += "AllenAI BintrayPrivate" at "http://dl.bintray.com/allenai/private"
-    libraryDependencies += "org.allenai.openie" %% "openie" % "4.2.4"
+0.9329286852051247     		SimpleArgument(U.S. President Obama,List([0, 20)))     	Relation(gave,List([21, 25)))  	SimpleArgument(a speech,List([26, 34)))	U.S. President Obama gave a speech
+0.8847999636040884     		SimpleArgument(Obama,List([15, 20)))   	Relation([is] President [of],List([5, 14)))    	SimpleArgument(United States,List([0, 4)))     	U.S. President Obama gave a speech
+```
 
 ## Contributors
 * Michael Schmitz (http://www.schmitztech.com/)
 * Harinder Pal (http://www.cse.iitd.ac.in/~mcs142123/)
 * Bhadra Mani
+* Michal Guerquin
