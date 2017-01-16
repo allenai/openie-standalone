@@ -224,3 +224,4 @@ Example Usage 3:
 * Michael Schmitz (http://www.schmitztech.com/)
 * Harinder Pal (http://www.cse.iitd.ac.in/~mcs142123/)
 * Bhadra Mani
+* Michal Guerquin
