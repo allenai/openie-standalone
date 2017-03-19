@@ -76,7 +76,7 @@ Finally, `ClearSrl.scala` was adjusted to produce consistent behavior in Scala 2
 
 ## Research
 
-Open IE 4.x is the successor to [Ollie](http://www.gitub.com/knowitall/ollie).
+Open IE 4.x is the successor to [Ollie](http://www.github.com/knowitall/ollie).
 Whereas Ollie used bootstrapped dependency parse paths to extract relations
 (see [Open Language Learning for Information Extraction](https://homes.cs.washington.edu/~mausam/papers/emnlp12a.pdf)),
 Open IE 4.x uses similar argument and relation expansion heuristics to create
