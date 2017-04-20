@@ -80,6 +80,10 @@ object SrlExtractor extends App {
     opt[String]("ouput file") action { (string, config) =>
       val file = new File(string)
       config.copy(outputFile = Some(file))
+    } text ("output file (deprecated)")
+    opt[String]("output file") action { (string, config) =>
+      val file = new File(string)
+      config.copy(outputFile = Some(file))
     } text ("output file")
     opt[String]("gold") action { (string, config) =>
       val file = new File(string)

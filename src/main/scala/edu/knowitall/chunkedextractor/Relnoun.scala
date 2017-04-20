@@ -739,6 +739,10 @@ object Relnoun {
       opt[String]("ouput-file") action { (string, config) =>
         val file = new File(string)
         config.copy(outputFile = Some(file))
+      } text ("output file (deprecated)")
+      opt[String]("output-file") action { (string, config) =>
+        val file = new File(string)
+        config.copy(outputFile = Some(file))
       } text ("output file")
       opt[String]("encoding") action { (string, config) =>
         config.copy(encoding = string)
