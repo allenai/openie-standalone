@@ -131,6 +131,10 @@ object OpenIECli extends App {
     opt[String]("ouput-file") action { (string, config) =>
       val file = new File(string)
       config.copy(outputFile = Some(file))
+    } text ("output file (deprecated)")
+    opt[String]("output-file") action { (string, config) =>
+      val file = new File(string)
+      config.copy(outputFile = Some(file))
     } text ("output file")
     opt[String]("parser-server") action { (string, config) =>
       config.copy(parserServer = Some(new URL(string)))
